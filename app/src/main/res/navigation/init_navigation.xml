@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/init_navigation"
+    app:startDestination="@id/initOneFragment">
+
+    <fragment
+        android:id="@+id/initOneFragment"
+        android:name="com.danapps.letstalk.fragments.InitOneFragment"
+        android:label="fragment_init_one"
+        tools:layout="@layout/fragment_init_one" >
+        <action
+            android:id="@+id/action_initOneFragment_to_initTwoFragment"
+            app:destination="@id/initTwoFragment"
+            app:popUpTo="@+id/initOneFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/initTwoFragment"
+        android:name="com.danapps.letstalk.fragments.InitTwoFragment"
+        android:label="fragment_init_two"
+        tools:layout="@layout/fragment_init_two" />
+</navigation>
