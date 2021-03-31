@@ -15,7 +15,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="300dp"
             android:layout_height="400dp"
-            app:cardCornerRadius="5dp"
+            app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +36,10 @@
                     app:cardCornerRadius="100dp">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/showInitPicture"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_account_circle" />
                 </androidx.cardview.widget.CardView>
 
@@ -50,7 +52,7 @@
                     android:hint="What Should We Call You...">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/regNumber"
+                        android:id="@+id/initName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -58,11 +60,17 @@
 
 
                 <Button
-                    android:id="@+id/enterNumber"
+                    android:id="@+id/initLetsGo"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Let's Go" />
+
+                <ProgressBar
+                    android:id="@+id/initProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

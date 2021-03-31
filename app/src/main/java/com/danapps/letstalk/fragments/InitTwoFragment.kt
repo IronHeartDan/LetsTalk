@@ -4,18 +4,24 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.danapps.letstalk.InitActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.adapters.MediaAdapter
+import com.danapps.letstalk.models.Media
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.fragment_init_one.view.*
 import kotlinx.android.synthetic.main.fragment_init_two.view.*
 
 
@@ -69,6 +75,14 @@ class InitTwoFragment : Fragment() {
         view.initGalleryList.adapter = mediaAdapter
         view.initGalleryList.layoutManager = GridLayoutManager(requireContext(), 3)
 
+        mediaAdapter.setOnItemClickListener(object : MediaAdapter.OnItemClickListener {
+            override fun onItemClick(media: Media) {
+                Glide.with(requireContext()).load(media.uri).into(view.showInitPicture)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+
+        })
+
         view.initPicture.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
@@ -102,6 +116,19 @@ class InitTwoFragment : Fragment() {
 
         view.closeInitBottomSheet.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        view.initLetsGo.setOnClickListener {
+            val initName = view.initName.text?.trim().toString()
+            val initProfile = null
+            if (!TextUtils.isEmpty(initName)) {
+                view.initProgress.visibility = View.VISIBLE
+                (requireActivity() as InitActivity).initName = initName
+                (requireActivity() as InitActivity).initProfile = initProfile
+                (requireActivity() as InitActivity).initUser()
+            } else {
+                Toast.makeText(requireContext(), "Please Enter Name", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return view
