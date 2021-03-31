@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 
+
 class InitActivity : AppCompatActivity() {
     lateinit var initNumber: String
     lateinit var initName: String
