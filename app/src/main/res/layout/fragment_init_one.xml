@@ -15,79 +15,90 @@
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
+        style="@style/CustomCardCorners"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_layout"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/regInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:padding="2dp"
-            android:text="Lets Get You Started"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outlinedTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/regInfo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter Number"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:fontFamily="sans-serif-black"
+                android:padding="2dp"
+                android:text="Lets Get You Started"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/regNumber"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/outlinedTextField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone" />
+                    android:hint="Enter Number"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/regNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone" />
 
-            <ProgressBar
-                android:id="@+id/showProgress"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/outlinedTextField"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/outlinedTextField" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ProgressBar
+                    android:id="@+id/showProgress"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/outlinedTextField"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/outlinedTextField" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <Button
-            android:id="@+id/enterNumber"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:tag="0"
-            android:text="GET OTP" />
+            <Button
+                android:id="@+id/enterNumber"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="0"
+                android:text="GET OTP" />
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

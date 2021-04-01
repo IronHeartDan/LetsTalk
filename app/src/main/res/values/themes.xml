@@ -14,11 +14,15 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
-        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
+    <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
     </style>
 
-    <style name="CustomShapeAppearanceBottomSheetDialog">
+    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
+    </style>
+
+    <style name="CustomShapeAppearance">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">20dp</item>
         <item name="cornerSizeTopLeft">20dp</item>

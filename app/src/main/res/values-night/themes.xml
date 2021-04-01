@@ -22,4 +22,5 @@
         <item name="tabTextAppearance">@style/TextAppearance.AppCompat.Small</item>
         <item name="tabIndicatorFullWidth">false</item>
     </style>
+
 </resources>

@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
-                    }else
+                    } else
                         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
                 "1" -> {

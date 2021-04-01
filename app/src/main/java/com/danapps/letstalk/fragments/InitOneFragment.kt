@@ -63,15 +63,18 @@ class InitOneFragment : Fragment() {
                                         view.enterNumber.isEnabled = true
                                         view.enterNumber.text = "Submit"
                                         view.enterNumber.tag = "1"
+                                        (requireActivity() as InitActivity).initNumber = number
                                     }
 
                                     override fun onVerificationCompleted(p0: PhoneAuthCredential) {
                                         Toast.makeText(
                                             requireContext(),
-                                            "Sucess",
+                                            "Auto Verified",
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
+                                        view.findNavController()
+                                            .navigate(R.id.action_initOneFragment_to_initTwoFragment)
                                     }
 
                                     override fun onVerificationFailed(p0: FirebaseException) {
@@ -100,7 +103,6 @@ class InitOneFragment : Fragment() {
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
                                 showProgress.visibility = View.GONE
-                                (requireActivity() as InitActivity).initNumber = number
                                 view.findNavController()
                                     .navigate(R.id.action_initOneFragment_to_initTwoFragment)
                             } else {
