@@ -7,19 +7,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.R
-import com.danapps.letstalk.models.Contacts
+import com.danapps.letstalk.models.Contact
 import kotlinx.android.synthetic.main.new_chat_item.view.*
 
 class NewChatAdapter :
-    ListAdapter<Contacts, NewChatAdapter.NewChatHolder>(DiffCallback()) {
+    ListAdapter<Contact, NewChatAdapter.NewChatHolder>(DiffCallback()) {
 
 
-    private class DiffCallback : DiffUtil.ItemCallback<Contacts>() {
-        override fun areItemsTheSame(oldItem: Contacts, newItem: Contacts): Boolean {
+    private class DiffCallback : DiffUtil.ItemCallback<Contact>() {
+        override fun areItemsTheSame(oldItem: Contact, newItem: Contact): Boolean {
             return oldItem.number === newItem.number
         }
 
-        override fun areContentsTheSame(oldItem: Contacts, newItem: Contacts): Boolean {
+        override fun areContentsTheSame(oldItem: Contact, newItem: Contact): Boolean {
             return oldItem.number == newItem.number
         }
     }

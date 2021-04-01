@@ -12,8 +12,8 @@ interface ApiService {
     @GET("/api/users")
     fun getUsers(): Call<String>
 
-    @GET("/api/user/{number}")
-    fun getUser(@Path(value = "number") number: String): Call<String>
+    @GET("/api/user/exists/{number}")
+    fun userExists(@Path(value = "number") number: String): Call<Boolean>
 
     @POST("/api/create")
     fun createUser(@Body user: User): Call<String>

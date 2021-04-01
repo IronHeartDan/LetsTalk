@@ -6,13 +6,14 @@ import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import com.danapps.letstalk.models.Contacts
+import android.util.Log
+import com.danapps.letstalk.models.Contact
 
 class ContactsLiveData(
     private val context: Context
-) : ContactsProviderLiveData<List<Contacts>>(context, uri) {
+) : ContactsProviderLiveData<List<Contact>>(context, uri) {
 
-    override fun getContentProviderValue(): List<Contacts> {
+    override fun getContentProviderValue(): List<Contact> {
         return getContacts()
     }
 
@@ -21,15 +22,17 @@ class ContactsLiveData(
     }
 
 
-    private fun getContacts(): List<Contacts> {
-        val contacts = mutableListOf<Contacts>()
+    private fun getContacts(): List<Contact> {
+        val contacts = mutableListOf<Contact>()
         val cursor: Cursor?
+        val normalizedNumbers: HashSet<String> = HashSet()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             cursor = context.contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(
                     ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
                 ),
                 Bundle().apply
                 {
@@ -45,7 +48,8 @@ class ContactsLiveData(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(
                     ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
                 ),
                 null,
                 null,
@@ -57,7 +61,13 @@ class ContactsLiveData(
                 cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
             val number =
                 cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            contacts.add(Contacts(name, number))
+            val normalizedNum =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER))
+            if (normalizedNumbers.add(normalizedNum)) {
+                contacts.add(Contact(name, null, number))
+            } else {
+                Log.d("TEST", "getContacts: Duplicate $normalizedNum")
+            }
         }
         cursor.close()
         return contacts

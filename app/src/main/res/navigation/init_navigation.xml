@@ -20,5 +20,16 @@
         android:id="@+id/initTwoFragment"
         android:name="com.danapps.letstalk.fragments.InitTwoFragment"
         android:label="fragment_init_two"
-        tools:layout="@layout/fragment_init_two" />
+        tools:layout="@layout/fragment_init_two" >
+        <action
+            android:id="@+id/action_initTwoFragment_to_syncContactsFragment"
+            app:destination="@id/syncContactsFragment"
+            app:popUpTo="@+id/initTwoFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/syncContactsFragment"
+        android:name="com.danapps.letstalk.fragments.SyncContactsFragment"
+        android:label="fragment_sync_contacts"
+        tools:layout="@layout/fragment_sync_contacts" />
 </navigation>

@@ -57,11 +57,12 @@ class InitOneFragment : Fragment() {
                                         super.onCodeSent(p0, p1)
                                         verificationId = p0
                                         view.showProgress.visibility = View.GONE
-                                        view.regInfo.text = "Enter OTP Sent To $number"
+                                        view.regInfo.text = "OTP Sent To $number"
+                                        view.outlinedTextField.hint = "Enter OTP"
                                         view.regNumber.text!!.clear()
                                         view.regNumber.hint = "OTP"
                                         view.enterNumber.isEnabled = true
-                                        view.enterNumber.text = "Submit"
+                                        view.enterNumber.text = "Verify"
                                         view.enterNumber.tag = "1"
                                         (requireActivity() as InitActivity).initNumber = number
                                     }
@@ -95,6 +96,7 @@ class InitOneFragment : Fragment() {
                             view.enterNumber.isEnabled = true
                             alertDialog.dismiss()
                         }
+                        .setCancelable(false)
                         .create()
                         .show()
                 } else {

@@ -20,13 +20,10 @@ import com.danapps.letstalk.adapters.MediaAdapter
 import com.danapps.letstalk.models.Media
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_init_one.view.*
 import kotlinx.android.synthetic.main.fragment_init_two.view.*
 
 
 class InitTwoFragment : Fragment() {
-    private lateinit var db: FirebaseFirestore
     private lateinit var letsTalkViewModel: LetsTalkViewModel
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var mediaAdapter: MediaAdapter
@@ -44,7 +41,6 @@ class InitTwoFragment : Fragment() {
             ).get(
                 LetsTalkViewModel::class.java
             )
-        db = FirebaseFirestore.getInstance()
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.initBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

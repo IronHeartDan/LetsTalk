@@ -134,8 +134,12 @@ class MainActivity : AppCompatActivity() {
                                 this,
                                 Manifest.permission.READ_CONTACTS
                             ) == PackageManager.PERMISSION_GRANTED -> {
+                                bottomSheetProgress.visibility = View.VISIBLE
+                                letsTalkViewModel.syncContacts()
                                 letsTalkViewModel.contactsLive.observe(this, { contactsList ->
                                     newChatAdapter.submitList(contactsList)
+                                    if (bottomSheetProgress.visibility == View.VISIBLE)
+                                        bottomSheetProgress.visibility = View.GONE
                                 })
                                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                                 contactsSet = true
@@ -200,8 +204,11 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 121 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            letsTalkViewModel.contactsLive.observe(this, {
-                newChatAdapter.submitList(it)
+            letsTalkViewModel.syncContacts()
+            letsTalkViewModel.contactsLive.observe(this, { contactsList ->
+                newChatAdapter.submitList(contactsList)
+                if (bottomSheetProgress.visibility == View.VISIBLE)
+                    bottomSheetProgress.visibility = View.GONE
             })
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             contactsSet = true
