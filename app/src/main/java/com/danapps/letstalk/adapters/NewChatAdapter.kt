@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.new_chat_item.view.*
 class NewChatAdapter :
     ListAdapter<Contact, NewChatAdapter.NewChatHolder>(DiffCallback()) {
 
+    private lateinit var listener: NewChatClickListener
 
     private class DiffCallback : DiffUtil.ItemCallback<Contact>() {
         override fun areItemsTheSame(oldItem: Contact, newItem: Contact): Boolean {
@@ -24,7 +25,13 @@ class NewChatAdapter :
         }
     }
 
-    class NewChatHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class NewChatHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            itemView.setOnClickListener {
+                listener.onClick(getItem(adapterPosition))
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewChatHolder {
         val view =
@@ -36,4 +43,13 @@ class NewChatAdapter :
         holder.itemView.new_chat_itemName.text = getItem(position).name
         holder.itemView.new_chat_itemNumber.text = getItem(position).number
     }
+
+    interface NewChatClickListener {
+        fun onClick(contact: Contact)
+    }
+
+    fun setNewChatClickListener(newChatClickListener: NewChatClickListener) {
+        listener = newChatClickListener
+    }
+
 }

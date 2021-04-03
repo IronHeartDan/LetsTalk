@@ -13,6 +13,8 @@
         <action
             android:id="@+id/action_initOneFragment_to_initTwoFragment"
             app:destination="@id/initTwoFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
             app:popUpTo="@+id/initOneFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -24,6 +26,8 @@
         <action
             android:id="@+id/action_initTwoFragment_to_syncContactsFragment"
             app:destination="@id/syncContactsFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
             app:popUpTo="@+id/initTwoFragment"
             app:popUpToInclusive="true" />
     </fragment>

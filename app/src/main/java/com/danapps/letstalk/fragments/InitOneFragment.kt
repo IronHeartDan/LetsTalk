@@ -30,6 +30,8 @@ class InitOneFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_init_one, container, false)
         mAuth = FirebaseAuth.getInstance()
+
+        mAuth = FirebaseAuth.getInstance()
         view.enterNumber.setOnClickListener {
             val number = view.regNumber.text!!.trim().toString()
             if (!TextUtils.isEmpty(number)) {

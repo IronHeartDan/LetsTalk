@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.danapps.letstalk.InitActivity
+import com.danapps.letstalk.SplashActivity
 import com.danapps.letstalk.contentproviders.MediaLiveData
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
@@ -28,13 +29,13 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
     val mediaLive = MediaLiveData(viewModelApplication.applicationContext)
     private lateinit var database: LetsTalkDatabase
     private lateinit var dao: Dao
-    lateinit var contactsLive: LiveData<List<Contact>>
+    lateinit var syncedContactsLive: LiveData<List<Contact>>
 
     init {
         viewModelScope.launch {
             database = LetsTalkDatabase.getDatabase(viewModelApplication.applicationContext)
             dao = database.dao()
-            contactsLive = dao.getSyncedContacts()
+            syncedContactsLive = dao.getSyncedContacts()
         }
     }
 
@@ -102,10 +103,13 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
             RetroFitBuilder.apiService.userExists(it.number).enqueue(object : Callback<Boolean> {
                 override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
                     if (response.code() == 200) {
-                        if (response.body() == true) {
-                            viewModelScope.launch {
+                        viewModelScope.launch {
+                            if (response.body() == true) {
                                 if (!dao.checkSyncedContact(it.number))
                                     dao.insertSyncedContact(it)
+                            } else {
+                                if (dao.checkSyncedContact(it.number))
+                                    dao.deleteSyncedContact(it)
                             }
                         }
                     }
@@ -120,11 +124,26 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
     }
 
 
+    fun exists(number: String, activity: SplashActivity) {
+        viewModelScope.launch {
+            activity.letsGo(dao.getUser(number))
+        }
+    }
+
+    fun deleteUser() {
+        viewModelScope.launch {
+            dao.deleteUser()
+        }
+    }
+
     fun existsOrCreate(user: User, activity: InitActivity) {
         RetroFitBuilder.apiService.userExists(user.number).enqueue(object : Callback<Boolean> {
             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
                 if (response.code() == 200) {
                     if (response.body() == true) {
+                        viewModelScope.launch {
+                            dao.createUser(user)
+                        }
                         activity.initSyncContacts()
                     } else {
                         RetroFitBuilder.apiService.createUser(user)
@@ -135,6 +154,9 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
                                 ) {
                                     if (response.code() == 200) {
                                         if (response.body()!!.isNotEmpty()) {
+                                            viewModelScope.launch {
+                                                dao.createUser(user)
+                                            }
                                             activity.initSyncContacts()
                                         }
                                     }

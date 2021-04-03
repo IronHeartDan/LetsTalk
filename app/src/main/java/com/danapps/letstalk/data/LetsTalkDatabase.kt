@@ -1,12 +1,26 @@
 package com.danapps.letstalk.data
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
+import com.danapps.letstalk.models.User
+import java.util.*
 
-@Database(entities = [Contact::class], version = 1)
+class Converters {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Date? {
+        return value?.let { Date(it) }
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): Long? {
+        return date?.time?.toLong()
+    }
+}
+
+@Database(entities = [User::class, Contact::class, ChatMessage::class], version = 3)
+@TypeConverters(Converters::class)
 abstract class LetsTalkDatabase : RoomDatabase() {
 
     abstract fun dao(): Dao
@@ -26,7 +40,7 @@ abstract class LetsTalkDatabase : RoomDatabase() {
                     context.applicationContext,
                     LetsTalkDatabase::class.java,
                     "letstalk_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 // return instance
                 instance

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cinit_navigation"
+    app:startDestination="@id/initTwoFragment2">
+
+    <fragment
+        android:id="@+id/initTwoFragment2"
+        android:name="com.danapps.letstalk.fragments.InitTwoFragment"
+        android:label="fragment_init_two"
+        tools:layout="@layout/fragment_init_two">
+        <action
+            android:id="@+id/action_initTwoFragment2_to_syncContactsFragment2"
+            app:destination="@id/syncContactsFragment2"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popUpTo="@id/initTwoFragment2"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/syncContactsFragment2"
+        android:name="com.danapps.letstalk.fragments.SyncContactsFragment"
+        android:label="fragment_sync_contacts"
+        tools:layout="@layout/fragment_sync_contacts" />
+</navigation>

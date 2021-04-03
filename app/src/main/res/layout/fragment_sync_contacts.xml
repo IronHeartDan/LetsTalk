@@ -48,8 +48,9 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/progressBar"
+                app:layout_constraintBottom_toTopOf="@+id/syncContactsProgressBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView">
@@ -57,21 +58,21 @@
                 <Button
                     android:id="@+id/initSyncContacts"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sync Contacts" />
 
                 <Button
                     android:id="@+id/initContactsLater"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Later" />
 
             </LinearLayout>
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/syncContactsProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"

@@ -18,6 +18,7 @@ class SyncContactsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_sync_contacts, container, false)
 
         view.initSyncContacts.setOnClickListener {
+            view.syncContactsProgressBar.visibility = View.VISIBLE
             (activity as InitActivity).syncContacts()
         }
 

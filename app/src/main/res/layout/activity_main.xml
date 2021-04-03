@@ -60,7 +60,6 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:layout_insetEdge="bottom">
 
-
         <TextView
             android:id="@+id/bottomSheetInfo"
             android:layout_width="wrap_content"
@@ -73,23 +72,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/bottomSheetProgress"
-            android:layout_width="35dp"
-            android:visibility="gone"
-            android:layout_height="35dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
         <View
-            android:id="@+id/view"
+            android:id="@+id/divider3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bottomSheetInfo" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -99,8 +89,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view"
-            tools:listitem="@layout/new_chat_item" />
+            app:layout_constraintTop_toBottomOf="@+id/divider3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

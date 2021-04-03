@@ -18,6 +18,7 @@ import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
+import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
@@ -47,6 +48,13 @@ class MainActivity : AppCompatActivity() {
 
         newChatList.layoutManager = LinearLayoutManager(this)
         newChatList.adapter = newChatAdapter
+
+        newChatAdapter.setNewChatClickListener(object : NewChatAdapter.NewChatClickListener {
+            override fun onClick(contact: Contact) {
+                startActivity(Intent(this@MainActivity, ChatActivity::class.java))
+            }
+
+        })
 
         viewPager.adapter = FragmentAdapter(
             arrayListOf(CameraFragment(), ChatsFragment()),
@@ -134,12 +142,8 @@ class MainActivity : AppCompatActivity() {
                                 this,
                                 Manifest.permission.READ_CONTACTS
                             ) == PackageManager.PERMISSION_GRANTED -> {
-                                bottomSheetProgress.visibility = View.VISIBLE
-                                letsTalkViewModel.syncContacts()
-                                letsTalkViewModel.contactsLive.observe(this, { contactsList ->
+                                letsTalkViewModel.syncedContactsLive.observe(this, { contactsList ->
                                     newChatAdapter.submitList(contactsList)
-                                    if (bottomSheetProgress.visibility == View.VISIBLE)
-                                        bottomSheetProgress.visibility = View.GONE
                                 })
                                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                                 contactsSet = true
@@ -188,8 +192,45 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.refreshContacts -> {
+                when {
+                    ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.READ_CONTACTS
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        letsTalkViewModel.syncContacts()
+                    }
+                    ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.READ_CONTACTS
+                    ) -> {
+                        AlertDialog.Builder(this)
+                            .setTitle("Provide Contacts Permission...")
+                            .setMessage("Contacts Permission Is Required By LetsTalk To Show Your Contacts On The App")
+                            .setPositiveButton("GRANT") { dialog, _ ->
+                                dialog.dismiss()
+                                requestPermissions(
+                                    arrayOf(Manifest.permission.READ_CONTACTS),
+                                    121
+                                )
+                            }
+                            .setNegativeButton("DENY") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+                    }
+                    else -> {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.READ_CONTACTS),
+                            121
+                        )
+                    }
+                }
+            }
             R.id.logOut -> {
                 mAuth.signOut()
+                letsTalkViewModel.deleteUser()
                 startActivity(Intent(this, InitActivity::class.java))
                 finish()
             }
@@ -205,10 +246,8 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 121 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             letsTalkViewModel.syncContacts()
-            letsTalkViewModel.contactsLive.observe(this, { contactsList ->
+            letsTalkViewModel.syncedContactsLive.observe(this, { contactsList ->
                 newChatAdapter.submitList(contactsList)
-                if (bottomSheetProgress.visibility == View.VISIBLE)
-                    bottomSheetProgress.visibility = View.GONE
             })
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             contactsSet = true
