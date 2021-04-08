@@ -7,13 +7,13 @@ import io.socket.client.Socket
 
 class SocketInstance : Application() {
     lateinit var mSocket: Socket
-    private val serverURL = "http://10.0.2.2:5000"
+//    private var serverURL = "http://10.0.2.2:5000"
+    private var serverURL = "http://192.168.0.102:5000"
+//    private val serverURL = "https://lets-talk-backend.herokuapp.com"
 
-    override fun onCreate() {
-        super.onCreate()
+    fun connectSocket(number: String) {
         try {
-            mSocket = IO.socket(serverURL)
-            mSocket.connect()
+            mSocket = IO.socket("$serverURL/?number=$number")
         } catch (e: Exception) {
             Log.d("TEST", "Failed to connect ${e.message}")
         }

@@ -1,6 +1,7 @@
 package com.danapps.letstalk
 
 import android.Manifest
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -23,6 +24,8 @@ import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,11 +35,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private val newChatAdapter = NewChatAdapter()
     private var contactsSet = false
+    private lateinit var mSocket: Socket
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mAuth = FirebaseAuth.getInstance()
         setSupportActionBar(toolbarMain)
+
+        (application as SocketInstance).connectSocket(mAuth.currentUser!!.phoneNumber!!.substring(3))
+        mSocket = (application as SocketInstance).mSocket
+        mSocket.connect()
 
         letsTalkViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(
@@ -51,7 +60,12 @@ class MainActivity : AppCompatActivity() {
 
         newChatAdapter.setNewChatClickListener(object : NewChatAdapter.NewChatClickListener {
             override fun onClick(contact: Contact) {
-                startActivity(Intent(this@MainActivity, ChatActivity::class.java))
+                val intent = Intent(this@MainActivity, ChatActivity::class.java)
+                intent.putExtra(
+                    "contact",
+                    Gson().toJson(contact)
+                )
+                startActivity(intent)
             }
 
         })
@@ -192,6 +206,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.seeProfile -> {
+                startActivity(
+                    Intent(this, ProfileActivity::class.java),
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+                )
+            }
             R.id.refreshContacts -> {
                 when {
                     ContextCompat.checkSelfPermission(
@@ -264,5 +284,10 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        mSocket.disconnect()
+        super.onDestroy()
     }
 }

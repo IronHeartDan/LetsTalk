@@ -6,10 +6,11 @@ import java.util.*
 
 @Entity
 data class ChatMessage(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
     val from: String,
     val to: String,
     val msg: String,
     val timeStamp: Date
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}

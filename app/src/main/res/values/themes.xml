@@ -12,6 +12,14 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@android:transition/explode</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
+
     </style>
 
     <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
@@ -38,5 +46,6 @@
         <item name="tabTextAppearance">@style/TextAppearance.AppCompat.Small</item>
         <item name="tabIndicatorFullWidth">false</item>
     </style>
+
 
 </resources>

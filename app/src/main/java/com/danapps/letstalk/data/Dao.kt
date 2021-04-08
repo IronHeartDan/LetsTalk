@@ -19,7 +19,7 @@ interface Dao {
     suspend fun getUser(number: String): Boolean
 
     @Query("DELETE FROM user")
-    suspend fun deleteUser()
+    suspend fun logOut()
 
     @Query("SELECT * FROM contact ORDER BY name ASC")
     fun getSyncedContacts(): LiveData<List<Contact>>
@@ -39,4 +39,7 @@ interface Dao {
 
     @Insert
     suspend fun insertChat(chatMessage: ChatMessage)
+
+    @Query("SELECT * FROM chatmessage WHERE `from` = :from AND `to` = :to OR `from` = :to AND `to` = :from")
+     fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
 }

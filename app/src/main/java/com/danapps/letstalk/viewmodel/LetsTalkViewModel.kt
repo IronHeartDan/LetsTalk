@@ -17,6 +17,7 @@ import com.danapps.letstalk.contentproviders.MediaLiveData
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
 import com.danapps.letstalk.data.RetroFitBuilder
+import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.User
 import kotlinx.coroutines.launch
@@ -37,6 +38,19 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
             dao = database.dao()
             syncedContactsLive = dao.getSyncedContacts()
         }
+    }
+
+
+    //Chat System
+
+    fun insertChat(chatMessage: ChatMessage) {
+        viewModelScope.launch {
+            dao.insertChat(chatMessage)
+        }
+    }
+
+    fun getChats(from: String, to: String): LiveData<List<ChatMessage>> {
+        return dao.getChats(from, to)
     }
 
 
@@ -132,7 +146,7 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
 
     fun deleteUser() {
         viewModelScope.launch {
-            dao.deleteUser()
+            dao.logOut()
         }
     }
 

@@ -1,9 +1,9 @@
 package com.danapps.letstalk
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -35,7 +35,7 @@ class InitActivity : AppCompatActivity() {
             override fun onViewAttachedToWindow(v: View?) {
                 if (mAuth.currentUser != null) {
                     v?.findNavController()?.setGraph(R.navigation.cinit_navigation)
-                    initNumber = mAuth.currentUser!!.phoneNumber!!
+                    initNumber = mAuth.currentUser!!.phoneNumber!!.substring(3)
                     nav = 1
                 } else {
                     v?.findNavController()?.setGraph(R.navigation.init_navigation)
@@ -63,14 +63,10 @@ class InitActivity : AppCompatActivity() {
     }
 
     fun initSyncContacts() {
-
-
         if (nav == 0) {
-            Log.d("TEST", "initSyncContacts: One")
             nav_host_fragment.findNavController()
                 .navigate(R.id.action_initTwoFragment_to_syncContactsFragment)
         } else {
-            Log.d("TEST", "initSyncContacts: Two")
             nav_host_fragment.findNavController()
                 .navigate(R.id.action_initTwoFragment2_to_syncContactsFragment2)
         }
@@ -83,9 +79,7 @@ class InitActivity : AppCompatActivity() {
                 android.Manifest.permission.READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> {
                 letsTalkViewModel.syncContacts()
-                letsTalkViewModel.syncedContactsLive.observe(this, {
-                    initalizedUser()
-                })
+                initalizedUser()
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
@@ -117,7 +111,8 @@ class InitActivity : AppCompatActivity() {
     }
 
     fun initalizedUser() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java),
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         finish()
     }
 
@@ -129,9 +124,7 @@ class InitActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 121 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             letsTalkViewModel.syncContacts()
-            letsTalkViewModel.syncedContactsLive.observe(this, {
-                initalizedUser()
-            })
+            initalizedUser()
         }
     }
 }
