@@ -1,23 +1,30 @@
 package com.danapps.letstalk.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.danapps.letstalk.ChatActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.ChatMessage
 import kotlinx.android.synthetic.main.chat_item_left.view.*
 import kotlinx.android.synthetic.main.chat_item_right.view.*
 
-class ChatAdapter(val number: String) :
-    ListAdapter<ChatMessage, ChatAdapter.ChatHolder>(ChatDiffUtil()) {
+class ChatAdapter(val context: Context, val number: String) :
+    ListAdapter<ChatMessage, ChatAdapter.ChatHolder>(ChatDiffUtil(context, number)) {
 
-
-    class ChatDiffUtil : DiffUtil.ItemCallback<ChatMessage>() {
+    class ChatDiffUtil(val context: Context, val number: String) :
+        DiffUtil.ItemCallback<ChatMessage>() {
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
-            return oldItem.id == newItem.id
+            val check = oldItem.id == newItem.id
+            if (!check && newItem.to == number) {
+                (context as ChatActivity).markSeen()
+            }
+            return check
         }
 
         override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
@@ -45,6 +52,32 @@ class ChatAdapter(val number: String) :
     override fun onBindViewHolder(holder: ChatHolder, position: Int) {
         if (getItem(position).from == number) {
             holder.itemView.chat_message_right.text = getItem(position).msg
+            when (getItem(position).msgStats) {
+                1 -> holder.itemView.msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_to_server
+                    )
+                )
+                2 -> holder.itemView.msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_to_user
+                    )
+                )
+                3 -> holder.itemView.msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_seen
+                    )
+                )
+                else -> holder.itemView.msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_sending
+                    )
+                )
+            }
         } else {
             holder.itemView.chat_message_left.text = getItem(position).msg
         }

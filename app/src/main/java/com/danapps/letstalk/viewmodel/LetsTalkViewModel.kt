@@ -43,9 +43,19 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
 
     //Chat System
 
-    fun insertChat(chatMessage: ChatMessage) {
+    suspend fun insertChat(chatMessage: ChatMessage): Long {
+        return dao.insertChat(chatMessage)
+    }
+
+    fun updateChat(chatMessage: ChatMessage) {
         viewModelScope.launch {
-            dao.insertChat(chatMessage)
+            dao.updateChat(chatMessage)
+        }
+    }
+
+    fun markSeen(from: String, to: String) {
+        viewModelScope.launch {
+            dao.markSeen(from, to)
         }
     }
 

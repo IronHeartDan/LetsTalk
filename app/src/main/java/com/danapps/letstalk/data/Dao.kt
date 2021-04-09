@@ -1,10 +1,8 @@
 package com.danapps.letstalk.data
 
 import androidx.lifecycle.LiveData
+import androidx.room.*
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.User
@@ -38,8 +36,14 @@ interface Dao {
 
 
     @Insert
-    suspend fun insertChat(chatMessage: ChatMessage)
+    suspend fun insertChat(chatMessage: ChatMessage): Long
+
+    @Update
+    suspend fun updateChat(chatMessage: ChatMessage)
+
+    @Query("UPDATE chatmessage set msgStats=3 WHERE `from` = :from AND `to` = :to ")
+    suspend fun markSeen(from: String, to: String)
 
     @Query("SELECT * FROM chatmessage WHERE `from` = :from AND `to` = :to OR `from` = :to AND `to` = :from")
-     fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
+    fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
 }

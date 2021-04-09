@@ -19,7 +19,7 @@ class Converters {
     }
 }
 
-@Database(entities = [User::class, Contact::class, ChatMessage::class], version = 3)
+@Database(entities = [User::class, Contact::class, ChatMessage::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class LetsTalkDatabase : RoomDatabase() {
 

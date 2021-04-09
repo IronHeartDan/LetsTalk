@@ -13,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter
-import com.danapps.letstalk.data.MsgParcel
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
 import com.danapps.letstalk.models.ChatMessage
@@ -29,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -58,6 +60,44 @@ class MainActivity : AppCompatActivity() {
             LetsTalkViewModel::class.java
         )
 
+        //Chat Insert
+
+        mSocket.on("message") {
+            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            val chatMessage = ChatMessage(
+                from = msgParcel.from,
+                to = msgParcel.to,
+                msg = msgParcel.msg,
+                null
+            )
+            letsTalkViewModel.viewModelScope.launch {
+                val id = async {
+                    letsTalkViewModel.insertChat(chatMessage)
+                }
+                id.await()
+                chatMessage.msgStats = 2
+                chatMessage.id = msgParcel.id
+                val sendMsg =
+                    Gson().toJson(chatMessage)
+                mSocket.emit("msgStats", sendMsg)
+            }
+        }
+
+
+        mSocket.on("msgStats") {
+            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            letsTalkViewModel.updateChat(msgParcel)
+        }
+
+
+
+        mSocket.on("markSeen") {
+            val markSeen = Gson().fromJson(it[0].toString(), ChatActivity.MarkSeen::class.java)
+            letsTalkViewModel.markSeen(markSeen.to, markSeen.from)
+        }
+
+
+
         newChatList.layoutManager = LinearLayoutManager(this)
         newChatList.adapter = newChatAdapter
 
@@ -69,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                     Gson().toJson(contact)
                 )
                 startActivity(intent)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
 
         })
@@ -200,20 +241,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        //Chat Insert
-
-        mSocket.on("message") {
-
-            val msgParcel = Gson().fromJson(it[0].toString(), MsgParcel::class.java)
-            val chatMessage = ChatMessage(
-                from = msgParcel.from,
-                to = mAuth.currentUser!!.phoneNumber!!,
-                msg = msgParcel.msg,
-                timeStamp = Date()
-            )
-            letsTalkViewModel.insertChat(chatMessage)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -266,6 +293,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.logOut -> {
+                mSocket.off("message")
                 mAuth.signOut()
                 letsTalkViewModel.deleteUser()
                 startActivity(Intent(this, InitActivity::class.java))

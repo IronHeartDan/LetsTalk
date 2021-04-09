@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danapps.letstalk.adapters.ChatAdapter
-import com.danapps.letstalk.data.MsgParcel
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
@@ -17,12 +18,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var letsTalkViewModel: LetsTalkViewModel
     private lateinit var mSocket: Socket
-    lateinit var myNumber: String
+    private lateinit var myNumber: String
+    private lateinit var contact: Contact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -36,17 +40,28 @@ class ChatActivity : AppCompatActivity() {
                 LetsTalkViewModel::class.java
             )
 
-        val contact = Gson().fromJson(intent.extras?.get("contact").toString(), Contact::class.java)
+        contact = Gson().fromJson(intent.extras?.get("contact").toString(), Contact::class.java)
 
         supportActionBar?.title = contact.name
-        supportActionBar?.subtitle = contact.number
 
 
         myNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
         mSocket = (application as SocketInstance).mSocket
+        markSeen()
+        mSocket.emit("enterRoom", contact.number)
+        mSocket.emit("isOnline", contact.number)
+        mSocket.on("isOnline") {
+            runOnUiThread {
+                if (it[0] == true) {
+                    supportActionBar?.subtitle = "Online"
+                } else {
+                    supportActionBar?.subtitle = "Offline"
+                }
+            }
+        }
 
 
-        val adapter = ChatAdapter(myNumber)
+        val adapter = ChatAdapter(this, myNumber)
         val layoutManager = LinearLayoutManager(this)
         layoutManager.stackFromEnd = true
         messagesList.layoutManager = layoutManager
@@ -90,31 +105,43 @@ class ChatActivity : AppCompatActivity() {
         sendMessage.setOnClickListener {
             val msg = message.text.toString().trim()
             if (!TextUtils.isEmpty(msg)) {
-                val sendMsg = Gson().toJson(MsgParcel(myNumber, contact.number, msg))
-                val chatMessage = ChatMessage(
-                    from = myNumber,
-                    to = contact.number,
-                    msg = msg,
-                    timeStamp = Date()
-                )
-                letsTalkViewModel.insertChat(chatMessage)
-                mSocket.emit("message", sendMsg)
+                val chatMessage =
+                    ChatMessage(
+                        from = myNumber,
+                        to = contact.number,
+                        msg = msg,
+                        msgStats = 0
+                    )
+                letsTalkViewModel.viewModelScope.launch {
+                    val id = async {
+                        letsTalkViewModel.insertChat(chatMessage)
+                    }
+                    chatMessage.id = id.await().toInt()
+                    val sendMsg =
+                        Gson().toJson(chatMessage)
+                    mSocket.emit("message", sendMsg)
+                }
                 message.text.clear()
             } else {
-                supportActionBar?.subtitle = contact.number
                 Toast.makeText(this, "Please Enter The Message", Toast.LENGTH_SHORT).show()
-
             }
         }
+    }
 
-//        mSocket.on("typing") {
-//            val showTyping = Gson().fromJson(it[0].toString(), ShowTyping::class.java)
-//            if (showTyping.typing) {
-//                supportActionBar?.subtitle = "Typing"
-//            } else {
-//                supportActionBar?.subtitle = "Online"
-//            }
-//        }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.chat_menu, menu)
+        return true
+    }
+
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return super.onOptionsItemSelected(item)
+//    }
+
+    override fun onDestroy() {
+        mSocket.emit("exitRoom", contact.number)
+        mSocket.off("isOnline")
+        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -122,11 +149,10 @@ class ChatActivity : AppCompatActivity() {
         return true
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mSocket.off("message")
+    fun markSeen() {
+        mSocket.emit("markSeen", Gson().toJson(MarkSeen(myNumber, contact.number)))
     }
 
     data class ShowTyping(val who: String, val typing: Boolean)
+    data class MarkSeen(val from: String, val to: String)
 }
