@@ -1,14 +1,15 @@
 package com.danapps.letstalk
 
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danapps.letstalk.adapters.ChatAdapter
+import com.danapps.letstalk.data.MsgParcel
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
@@ -26,11 +27,9 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        val theme = findViewById<ConstraintLayout>(R.id.chat_main_layout)
-        val animationDrawable = theme.background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(250)
-        animationDrawable.setExitFadeDuration(250)
-        animationDrawable.start()
+        setSupportActionBar(chatToolBar)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         letsTalkViewModel =
             ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(
@@ -38,6 +37,11 @@ class ChatActivity : AppCompatActivity() {
             )
 
         val contact = Gson().fromJson(intent.extras?.get("contact").toString(), Contact::class.java)
+
+        supportActionBar?.title = contact.name
+        supportActionBar?.subtitle = contact.number
+
+
         myNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
         mSocket = (application as SocketInstance).mSocket
 
@@ -53,10 +57,40 @@ class ChatActivity : AppCompatActivity() {
             messagesList.smoothScrollToPosition(adapter.itemCount)
         })
 
+        var timer = Timer()
+        message.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!TextUtils.isEmpty(s)) {
+                    val showTyping = Gson().toJson(ShowTyping(contact.number, true))
+                    mSocket.emit("typing", showTyping)
+                }
+                timer.cancel()
+                timer = Timer()
+                val delay: Long = 1000
+                timer.schedule(
+                    object : TimerTask() {
+                        override fun run() {
+                            // Typing False
+                            val showTyping = Gson().toJson(ShowTyping(contact.number, false))
+                            mSocket.emit("typing", showTyping)
+                        }
+                    },
+                    delay
+                )
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+
         sendMessage.setOnClickListener {
             val msg = message.text.toString().trim()
             if (!TextUtils.isEmpty(msg)) {
-                val sendMsg = Gson().toJson(SendMsg(contact.number, msg))
+                val sendMsg = Gson().toJson(MsgParcel(myNumber, contact.number, msg))
                 val chatMessage = ChatMessage(
                     from = myNumber,
                     to = contact.number,
@@ -67,32 +101,32 @@ class ChatActivity : AppCompatActivity() {
                 mSocket.emit("message", sendMsg)
                 message.text.clear()
             } else {
+                supportActionBar?.subtitle = contact.number
                 Toast.makeText(this, "Please Enter The Message", Toast.LENGTH_SHORT).show()
 
             }
         }
 
-
-
-
-
-        mSocket.on("message") {
-
-            val getMsg = Gson().fromJson(it[0].toString(), SendMsg::class.java)
-            val chatMessage = ChatMessage(
-                from = contact.number,
-                to = myNumber,
-                msg = getMsg.msg,
-                timeStamp = Date()
-            )
-            letsTalkViewModel.insertChat(chatMessage)
-        }
+//        mSocket.on("typing") {
+//            val showTyping = Gson().fromJson(it[0].toString(), ShowTyping::class.java)
+//            if (showTyping.typing) {
+//                supportActionBar?.subtitle = "Typing"
+//            } else {
+//                supportActionBar?.subtitle = "Online"
+//            }
+//        }
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         mSocket.off("message")
     }
 
-    data class SendMsg(val who: String, val msg: String)
+    data class ShowTyping(val who: String, val typing: Boolean)
 }

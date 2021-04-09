@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter
+import com.danapps.letstalk.data.MsgParcel
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
+import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     //    private val TAG = "TEST"
@@ -196,6 +199,20 @@ class MainActivity : AppCompatActivity() {
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
             }
+        }
+
+        //Chat Insert
+
+        mSocket.on("message") {
+
+            val msgParcel = Gson().fromJson(it[0].toString(), MsgParcel::class.java)
+            val chatMessage = ChatMessage(
+                from = msgParcel.from,
+                to = mAuth.currentUser!!.phoneNumber!!,
+                msg = msgParcel.msg,
+                timeStamp = Date()
+            )
+            letsTalkViewModel.insertChat(chatMessage)
         }
     }
 

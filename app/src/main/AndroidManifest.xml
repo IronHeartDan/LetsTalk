@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LetsTalk"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity"/>
         <activity android:name=".ChatActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
