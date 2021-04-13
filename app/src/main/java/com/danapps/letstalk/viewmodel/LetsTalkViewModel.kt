@@ -7,15 +7,14 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.danapps.letstalk.InitActivity
+import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.SplashActivity
+import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.contentproviders.MediaLiveData
 import com.danapps.letstalk.data.Dao
-import com.danapps.letstalk.data.LetsTalkDatabase
 import com.danapps.letstalk.data.RetroFitBuilder
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
@@ -28,14 +27,11 @@ import retrofit2.Response
 class LetsTalkViewModel(private val viewModelApplication: Application) :
     AndroidViewModel(viewModelApplication) {
     val mediaLive = MediaLiveData(viewModelApplication.applicationContext)
-    private lateinit var database: LetsTalkDatabase
-    private lateinit var dao: Dao
+    private val dao: Dao = (getApplication<LetsTalkApplication>().database.dao())
     lateinit var syncedContactsLive: LiveData<List<Contact>>
 
     init {
         viewModelScope.launch {
-            database = LetsTalkDatabase.getDatabase(viewModelApplication.applicationContext)
-            dao = database.dao()
             syncedContactsLive = dao.getSyncedContacts()
         }
     }
@@ -64,7 +60,7 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
     }
 
 
-    fun syncContacts() {
+    fun syncContacts(contactsSyncInterface: ContactsSyncInterface) {
         val contacts = mutableListOf<Contact>()
         val cursor: Cursor?
         val normalizedNumbers: HashSet<String> = HashSet()
@@ -95,7 +91,7 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
                 ),
                 null,
                 null,
-                ContactsContract.Contacts.DISPLAY_NAME + "ASC"
+                ContactsContract.Contacts.DISPLAY_NAME + " ASC"
             )
         }
         while (cursor!!.moveToNext()) {
@@ -123,85 +119,62 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
         }
         cursor.close()
 
-        contacts.forEach {
-            RetroFitBuilder.apiService.userExists(it.number).enqueue(object : Callback<Boolean> {
-                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                    if (response.code() == 200) {
-                        viewModelScope.launch {
-                            if (response.body() == true) {
-                                if (!dao.checkSyncedContact(it.number))
-                                    dao.insertSyncedContact(it)
-                            } else {
-                                if (dao.checkSyncedContact(it.number))
-                                    dao.deleteSyncedContact(it)
-                            }
-                        }
+        Log.d("TEST", "syncContacts: ${contacts.size}")
+
+        RetroFitBuilder.apiService.syncContacts(contacts.toTypedArray()).enqueue(object :
+            Callback<Array<Contact>> {
+            override fun onResponse(
+                call: Call<Array<Contact>>,
+                response: Response<Array<Contact>>
+            ) {
+                contactsSyncInterface.finished()
+                Log.d("TEST", "onResponse: ${response.body()?.size}")
+
+                viewModelScope.launch {
+                    dao.deleteContacts()
+
+                    response.body()?.forEach {
+                        dao.insertSyncedContact(it)
                     }
                 }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    Log.d("TEST", "onFailure: ${t.message}")
-                }
+            }
 
-            })
-        }
+            override fun onFailure(call: Call<Array<Contact>>, t: Throwable) {
+                contactsSyncInterface.error(t.message)
+                Log.d("TEST", "onFailure: ${t.message}")
+            }
+
+        })
+
     }
 
 
+    fun createUser(user: User) {
+        viewModelScope.launch {
+            dao.createUser(user)
+        }
+    }
+
+    fun updateUser(user: User) {
+        viewModelScope.launch {
+            dao.updateUser(user)
+        }
+    }
+
     fun exists(number: String, activity: SplashActivity) {
         viewModelScope.launch {
-            activity.letsGo(dao.getUser(number))
+            activity.letsGo(dao.userExists(number))
         }
+    }
+
+    fun liveUser(number: String): LiveData<User> {
+        return dao.liveUser(number)
     }
 
     fun deleteUser() {
         viewModelScope.launch {
             dao.logOut()
         }
-    }
-
-    fun existsOrCreate(user: User, activity: InitActivity) {
-        RetroFitBuilder.apiService.userExists(user.number).enqueue(object : Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                if (response.code() == 200) {
-                    if (response.body() == true) {
-                        viewModelScope.launch {
-                            dao.createUser(user)
-                        }
-                        activity.initSyncContacts()
-                    } else {
-                        RetroFitBuilder.apiService.createUser(user)
-                            .enqueue(object : Callback<String> {
-                                override fun onResponse(
-                                    call: Call<String>,
-                                    response: Response<String>
-                                ) {
-                                    if (response.code() == 200) {
-                                        if (response.body()!!.isNotEmpty()) {
-                                            viewModelScope.launch {
-                                                dao.createUser(user)
-                                            }
-                                            activity.initSyncContacts()
-                                        }
-                                    }
-                                }
-
-                                override fun onFailure(call: Call<String>, t: Throwable) {
-                                    Log.d("TEST", "onResponse: ${t.message}")
-                                }
-
-                            })
-                    }
-                } else {
-                    Toast.makeText(activity, response.errorBody().toString(), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-
-            override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                Log.d("TEST", "onFailure: ${t.message}")
-            }
-
-        })
     }
 }

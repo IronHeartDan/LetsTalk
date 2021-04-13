@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter
 import com.danapps.letstalk.fragments.CameraFragment
@@ -48,9 +50,13 @@ class MainActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         setSupportActionBar(toolbarMain)
 
-        (application as SocketInstance).connectSocket(mAuth.currentUser!!.phoneNumber!!.substring(3))
-        mSocket = (application as SocketInstance).mSocket
-        mSocket.connect()
+        (this.application as LetsTalkApplication).connectSocket(
+            mAuth.currentUser!!.phoneNumber!!.substring(
+                3
+            ),
+            true
+        )
+        mSocket = (application as LetsTalkApplication).mSocket
 
         letsTalkViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(
@@ -243,6 +249,57 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun refreshContacts() {
+        contactsSyncProgress.visibility = View.VISIBLE
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                letsTalkViewModel.syncContacts(object : ContactsSyncInterface {
+                    override fun finished() {
+                        contactsSyncProgress.visibility = View.GONE
+                        Toast.makeText(this@MainActivity, "Contacts Refreshed", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                    override fun error(error: String?) {
+                        Toast.makeText(this@MainActivity, error, Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.READ_CONTACTS
+            ) -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Provide Contacts Permission...")
+                    .setMessage("Contacts Permission Is Required By LetsTalk To Show Your Contacts On The App")
+                    .setPositiveButton("GRANT") { dialog, _ ->
+                        dialog.dismiss()
+                        requestPermissions(
+                            arrayOf(Manifest.permission.READ_CONTACTS),
+                            121
+                        )
+                    }
+                    .setNegativeButton("DENY") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+            }
+            else -> {
+                requestPermissions(
+                    arrayOf(Manifest.permission.READ_CONTACTS),
+                    121
+                )
+            }
+        }
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -256,42 +313,7 @@ class MainActivity : AppCompatActivity() {
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
                 )
             }
-            R.id.refreshContacts -> {
-                when {
-                    ContextCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.READ_CONTACTS
-                    ) == PackageManager.PERMISSION_GRANTED -> {
-                        letsTalkViewModel.syncContacts()
-                    }
-                    ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        Manifest.permission.READ_CONTACTS
-                    ) -> {
-                        AlertDialog.Builder(this)
-                            .setTitle("Provide Contacts Permission...")
-                            .setMessage("Contacts Permission Is Required By LetsTalk To Show Your Contacts On The App")
-                            .setPositiveButton("GRANT") { dialog, _ ->
-                                dialog.dismiss()
-                                requestPermissions(
-                                    arrayOf(Manifest.permission.READ_CONTACTS),
-                                    121
-                                )
-                            }
-                            .setNegativeButton("DENY") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .create()
-                            .show()
-                    }
-                    else -> {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.READ_CONTACTS),
-                            121
-                        )
-                    }
-                }
-            }
+            R.id.refreshContacts -> refreshContacts()
             R.id.logOut -> {
                 mSocket.off("message")
                 mAuth.signOut()
@@ -310,12 +332,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 121 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            letsTalkViewModel.syncContacts()
-            letsTalkViewModel.syncedContactsLive.observe(this, { contactsList ->
-                newChatAdapter.submitList(contactsList)
-            })
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            contactsSet = true
+            refreshContacts()
         }
     }
 
@@ -332,7 +349,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        mSocket.disconnect()
         super.onDestroy()
+        application.onTerminate()
     }
 }

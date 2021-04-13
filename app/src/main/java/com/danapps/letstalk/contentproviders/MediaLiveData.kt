@@ -51,7 +51,7 @@ class MediaLiveData(val context: Context) : MediaProviderLiveData<List<Media>>(c
                 ),
                 null,
                 null,
-                MediaStore.Images.ImageColumns.DATE_MODIFIED + "ASC"
+                MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
             )
         }
         if (cursor != null) {

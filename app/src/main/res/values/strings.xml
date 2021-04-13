@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">LetsTalk</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="channel_name">Messages</string>
+    <string name="channel_description">Required to notify the latest received message(s)</string>
 </resources>

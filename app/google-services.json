@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "86408944735-npbli1b2jv2u7ednvc32c4rvuo7b5hcs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danapps.letstalk",
+            "certificate_hash": "228c9b98576577432fe84bcc656e5ec6e71ce195"
+          }
+        },
+        {
           "client_id": "86408944735-00jbthj0caobs5s73o8f53vo0h9qndno.apps.googleusercontent.com",
           "client_type": 3
         }

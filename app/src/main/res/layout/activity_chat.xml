@@ -19,9 +19,7 @@
             android:id="@+id/chatToolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:subtitle="Online"
             app:subtitleTextAppearance="@style/TextAppearance.AppCompat.Small"
-            app:title="User"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </com.google.android.material.appbar.AppBarLayout>

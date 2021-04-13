@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.danapps.letstalk.InitActivity
 import com.danapps.letstalk.R
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -66,7 +65,6 @@ class InitOneFragment : Fragment() {
                                         view.enterNumber.isEnabled = true
                                         view.enterNumber.text = "Verify"
                                         view.enterNumber.tag = "1"
-                                        (requireActivity() as InitActivity).initNumber = number
                                     }
 
                                     override fun onVerificationCompleted(p0: PhoneAuthCredential) {
@@ -76,8 +74,7 @@ class InitOneFragment : Fragment() {
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
-                                        view.findNavController()
-                                            .navigate(R.id.action_initOneFragment_to_initTwoFragment)
+                                        signIn(p0)
                                     }
 
                                     override fun onVerificationFailed(p0: FirebaseException) {
@@ -103,18 +100,7 @@ class InitOneFragment : Fragment() {
                         .show()
                 } else {
                     val credential = PhoneAuthProvider.getCredential(verificationId, number)
-                    mAuth.signInWithCredential(credential)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                showProgress.visibility = View.GONE
-                                view.findNavController()
-                                    .navigate(R.id.action_initOneFragment_to_initTwoFragment)
-                            } else {
-                                showProgress.visibility = View.GONE
-                                Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
+                    signIn(credential)
                 }
             } else {
                 Toast.makeText(requireContext(), "Please Enter In The Field", Toast.LENGTH_SHORT)
@@ -123,5 +109,20 @@ class InitOneFragment : Fragment() {
         }
 
         return view
+    }
+
+    fun signIn(credential: PhoneAuthCredential) {
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    showProgress.visibility = View.GONE
+                    view?.findNavController()
+                        ?.navigate(R.id.action_initOneFragment_to_initTwoFragment)
+                } else {
+                    showProgress.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
     }
 }

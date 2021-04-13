@@ -11,19 +11,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.danapps.letstalk.models.User
+import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_init.*
 
 
 class InitActivity : AppCompatActivity() {
-    lateinit var initNumber: String
-    lateinit var initName: String
-    var initProfile: String? = null
     private lateinit var letsTalkViewModel: LetsTalkViewModel
     private lateinit var mAuth: FirebaseAuth
     private var nav: Int = 0
+
+    lateinit var contactsSyncInterface: ContactsSyncInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,6 @@ class InitActivity : AppCompatActivity() {
             override fun onViewAttachedToWindow(v: View?) {
                 if (mAuth.currentUser != null) {
                     v?.findNavController()?.setGraph(R.navigation.cinit_navigation)
-                    initNumber = mAuth.currentUser!!.phoneNumber!!.substring(3)
                     nav = 1
                 } else {
                     v?.findNavController()?.setGraph(R.navigation.init_navigation)
@@ -57,29 +55,14 @@ class InitActivity : AppCompatActivity() {
         )
     }
 
-    fun initUser() {
-        val user = User(initName, initNumber, initProfile)
-        letsTalkViewModel.existsOrCreate(user, this)
-    }
-
-    fun initSyncContacts() {
-        if (nav == 0) {
-            nav_host_fragment.findNavController()
-                .navigate(R.id.action_initTwoFragment_to_syncContactsFragment)
-        } else {
-            nav_host_fragment.findNavController()
-                .navigate(R.id.action_initTwoFragment2_to_syncContactsFragment2)
-        }
-    }
-
-    fun syncContacts() {
+    fun syncContacts(contactsSyncInterface: ContactsSyncInterface) {
+        this.contactsSyncInterface = contactsSyncInterface
         when {
             ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> {
-                letsTalkViewModel.syncContacts()
-                initalizedUser()
+                letsTalkViewModel.syncContacts(contactsSyncInterface)
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
@@ -110,9 +93,11 @@ class InitActivity : AppCompatActivity() {
         }
     }
 
-    fun initalizedUser() {
-        startActivity(Intent(this, MainActivity::class.java),
-            ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+    fun initializedUser() {
+        startActivity(
+            Intent(this, MainActivity::class.java),
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+        )
         finish()
     }
 
@@ -123,8 +108,7 @@ class InitActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 121 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            letsTalkViewModel.syncContacts()
-            initalizedUser()
+            letsTalkViewModel.syncContacts(contactsSyncInterface)
         }
     }
 }

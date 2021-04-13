@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,7 +47,7 @@ class ChatActivity : AppCompatActivity() {
 
 
         myNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-        mSocket = (application as SocketInstance).mSocket
+        mSocket = (application as LetsTalkApplication).mSocket!!
         markSeen()
         mSocket.emit("enterRoom", contact.number)
         mSocket.emit("isOnline", contact.number)
@@ -78,8 +79,9 @@ class ChatActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("TEST", "onTextChanged: $start , $before , $count")
                 if (!TextUtils.isEmpty(s)) {
-                    val showTyping = Gson().toJson(ShowTyping(contact.number, true))
+                    val showTyping = Gson().toJson(ShowTyping(myNumber, contact.number, true))
                     mSocket.emit("typing", showTyping)
                 }
                 timer.cancel()
@@ -89,7 +91,8 @@ class ChatActivity : AppCompatActivity() {
                     object : TimerTask() {
                         override fun run() {
                             // Typing False
-                            val showTyping = Gson().toJson(ShowTyping(contact.number, false))
+                            val showTyping =
+                                Gson().toJson(ShowTyping(myNumber, contact.number, false))
                             mSocket.emit("typing", showTyping)
                         }
                     },
@@ -101,6 +104,19 @@ class ChatActivity : AppCompatActivity() {
             }
 
         })
+
+        mSocket.on("typing") {
+            val showTyping = Gson().fromJson(it[0].toString(), ShowTyping::class.java)
+            if (showTyping.typing) {
+                runOnUiThread {
+                    supportActionBar?.subtitle = "Typing"
+                }
+            } else {
+                runOnUiThread {
+                    supportActionBar?.subtitle = "Online"
+                }
+            }
+        }
 
         sendMessage.setOnClickListener {
             val msg = message.text.toString().trim()
@@ -153,6 +169,6 @@ class ChatActivity : AppCompatActivity() {
         mSocket.emit("markSeen", Gson().toJson(MarkSeen(myNumber, contact.number)))
     }
 
-    data class ShowTyping(val who: String, val typing: Boolean)
+    data class ShowTyping(val from: String, val to: String, val typing: Boolean)
     data class MarkSeen(val from: String, val to: String)
 }
