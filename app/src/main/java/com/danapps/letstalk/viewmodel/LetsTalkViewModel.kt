@@ -10,6 +10,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagedList
+import androidx.paging.toLiveData
 import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.SplashActivity
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
@@ -55,8 +57,8 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
         }
     }
 
-    fun getChats(from: String, to: String): LiveData<List<ChatMessage>> {
-        return dao.getChats(from, to)
+    fun getChats(from: String, to: String): LiveData<PagedList<ChatMessage>> {
+        return dao.getChats(from, to).toLiveData(10)
     }
 
 

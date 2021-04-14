@@ -10,7 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.adapters.ChatAdapter
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
@@ -47,7 +49,7 @@ class ChatActivity : AppCompatActivity() {
 
 
         myNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
-        mSocket = (application as LetsTalkApplication).mSocket!!
+        mSocket = (application as LetsTalkApplication).mSocket
         markSeen()
         mSocket.emit("enterRoom", contact.number)
         mSocket.emit("isOnline", contact.number)
@@ -68,9 +70,16 @@ class ChatActivity : AppCompatActivity() {
         messagesList.layoutManager = layoutManager
         messagesList.adapter = adapter
 
+        val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+        messagesList.itemAnimator = itemAnimator
+
         letsTalkViewModel.getChats(myNumber, contact.number).observe(this, {
             adapter.submitList(it)
-            messagesList.smoothScrollToPosition(adapter.itemCount)
+            messagesList.smoothScrollToPosition(adapter.itemCount+1)
         })
 
         var timer = Timer()

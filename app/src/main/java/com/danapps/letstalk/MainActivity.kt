@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -43,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private val newChatAdapter = NewChatAdapter()
     private var contactsSet = false
     private lateinit var mSocket: Socket
+    private lateinit var number: String
+    private lateinit var letsTalkApplication: LetsTalkApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,13 +51,16 @@ class MainActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         setSupportActionBar(toolbarMain)
 
-        (this.application as LetsTalkApplication).connectSocket(
-            mAuth.currentUser!!.phoneNumber!!.substring(
-                3
-            ),
-            true
-        )
+        number = mAuth.currentUser!!.phoneNumber!!.substring(3)
+
+        letsTalkApplication = (application as LetsTalkApplication)
+
+        if (!letsTalkApplication.isSocketInitialized()) {
+            letsTalkApplication.connectSocket(number, true)
+        }
+
         mSocket = (application as LetsTalkApplication).mSocket
+        mSocket.emit("setOnline", Gson().toJson(setOnline(number, true)))
 
         letsTalkViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(
@@ -77,15 +81,7 @@ class MainActivity : AppCompatActivity() {
                 null
             )
             letsTalkViewModel.viewModelScope.launch {
-                val id = async {
-                    letsTalkViewModel.insertChat(chatMessage)
-                }
-                id.await()
-                chatMessage.msgStats = 2
-                chatMessage.id = msgParcel.id
-                val sendMsg =
-                    Gson().toJson(chatMessage)
-                mSocket.emit("msgStats", sendMsg)
+                letsTalkViewModel.insertChat(chatMessage)
             }
         }
 
@@ -251,6 +247,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun refreshContacts() {
+        newChatList.visibility = View.GONE
+        shimmerLoad.visibility = View.VISIBLE
+        shimmerLoad.startShimmerAnimation()
         contactsSyncProgress.visibility = View.VISIBLE
         when {
             ContextCompat.checkSelfPermission(
@@ -262,6 +261,9 @@ class MainActivity : AppCompatActivity() {
                         contactsSyncProgress.visibility = View.GONE
                         Toast.makeText(this@MainActivity, "Contacts Refreshed", Toast.LENGTH_SHORT)
                             .show()
+                        newChatList.visibility = View.VISIBLE
+                        shimmerLoad.visibility = View.GONE
+                        shimmerLoad.stopShimmerAnimation()
                     }
 
                     override fun error(error: String?) {
@@ -350,6 +352,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        application.onTerminate()
+        mSocket.emit("setOnline", Gson().toJson(setOnline(number, false)))
     }
+
+    data class setOnline(val number: String, val status: Boolean)
 }

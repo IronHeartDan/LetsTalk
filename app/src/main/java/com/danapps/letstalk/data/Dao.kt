@@ -1,6 +1,7 @@
 package com.danapps.letstalk.data
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import androidx.room.Dao
 import com.danapps.letstalk.models.ChatMessage
@@ -34,6 +35,12 @@ interface Dao {
     @Insert
     suspend fun insertSyncedContact(contact: Contact)
 
+    @Query("SELECT EXISTS(SELECT * FROM contact WHERE number=:number)")
+    suspend fun contactExists(number: String): Boolean
+
+    @Query("SELECT * FROM contact WHERE number=:number")
+    suspend fun getContact(number: String): List<Contact>
+
     @Delete
     suspend fun deleteSyncedContact(contact: Contact)
 
@@ -54,5 +61,5 @@ interface Dao {
     suspend fun markSeen(from: String, to: String)
 
     @Query("SELECT * FROM chatmessage WHERE `from` = :from AND `to` = :to OR `from` = :to AND `to` = :from")
-    fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
+    fun getChats(from: String, to: String): DataSource.Factory<Int, ChatMessage>
 }
