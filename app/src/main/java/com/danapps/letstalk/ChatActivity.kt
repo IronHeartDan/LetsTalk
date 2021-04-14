@@ -173,6 +173,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        mSocket.emit("exitRoom", contact.number)
+        mSocket.off("isOnline")
         onBackPressed()
         return true
     }
