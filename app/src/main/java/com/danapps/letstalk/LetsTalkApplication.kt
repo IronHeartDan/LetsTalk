@@ -11,8 +11,10 @@ import android.widget.Toast
 import com.danapps.letstalk.Constants.Companion.BASE_URL
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
+import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.client.Socket
 import kotlinx.coroutines.GlobalScope
@@ -61,10 +63,47 @@ class LetsTalkApplication : Application() {
         try {
             mSocket = IO.socket("$BASE_URL/?number=$number&online=$showOnline")
             mSocket.connect()
+            mSocket.on(Socket.EVENT_CONNECT) {
+                startListening()
+            }
         } catch (e: Exception) {
             Log.d("LetsTalkApplication", "Failed to connect ${e.message}")
             Toast.makeText(applicationContext, "Failed to connect ${e.message}", Toast.LENGTH_SHORT)
                 .show()
+        }
+    }
+
+    private fun startListening() {
+        //Chat Insert
+
+        mSocket.on("message") {
+            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            val chatMessage = ChatMessage(
+                from = msgParcel.from,
+                to = msgParcel.to,
+                msg = msgParcel.msg,
+                null
+            )
+            GlobalScope.launch {
+                dao.insertChat(chatMessage)
+            }
+        }
+
+
+        mSocket.on("msgStats") {
+            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            GlobalScope.launch {
+                dao.updateChat(msgParcel)
+            }
+        }
+
+
+
+        mSocket.on("markSeen") {
+            val markSeen = Gson().fromJson(it[0].toString(), ChatActivity.MarkSeen::class.java)
+            GlobalScope.launch {
+                dao.markSeen(markSeen.to, markSeen.from)
+            }
         }
     }
 

@@ -82,7 +82,7 @@ class ChatActivity : AppCompatActivity() {
 
         letsTalkViewModel.getChats(myNumber, contact.number).observe(this, {
             adapter.submitList(it)
-            messagesList.smoothScrollToPosition(adapter.itemCount + 1)
+            messagesList.smoothScrollToPosition(adapter.itemCount)
         })
 
         var timer = Timer()

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
@@ -22,7 +21,6 @@ import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
-import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.SetOnline
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
@@ -32,7 +30,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.launch
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -71,36 +68,6 @@ class MainActivity : AppCompatActivity() {
             LetsTalkViewModel::class.java
         )
 
-        //Chat Insert
-
-        mSocket.on("message") {
-            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
-            val chatMessage = ChatMessage(
-                from = msgParcel.from,
-                to = msgParcel.to,
-                msg = msgParcel.msg,
-                null
-            )
-            letsTalkViewModel.viewModelScope.launch {
-                letsTalkViewModel.insertChat(chatMessage)
-            }
-        }
-
-
-        mSocket.on("msgStats") {
-            val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
-            letsTalkViewModel.updateChat(msgParcel)
-        }
-
-
-
-        mSocket.on("markSeen") {
-            val markSeen = Gson().fromJson(it[0].toString(), ChatActivity.MarkSeen::class.java)
-            letsTalkViewModel.markSeen(markSeen.to, markSeen.from)
-        }
-
-
-
         newChatList.layoutManager = LinearLayoutManager(this)
         newChatList.adapter = newChatAdapter
 
@@ -122,6 +89,7 @@ class MainActivity : AppCompatActivity() {
             this.supportFragmentManager,
             this.lifecycle
         )
+
         viewPager.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View?) {
                 viewPager.currentItem = 1
