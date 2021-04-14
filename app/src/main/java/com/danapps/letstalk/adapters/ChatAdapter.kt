@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.ChatActivity
 import com.danapps.letstalk.R
@@ -16,22 +17,22 @@ import kotlinx.android.synthetic.main.chat_item_left.view.*
 import kotlinx.android.synthetic.main.chat_item_right.view.*
 
 class ChatAdapter(val context: Context, val number: String) :
-    PagedListAdapter<ChatMessage, ChatAdapter.ChatHolder>(ChatDiffUtil(context, number)) {
+    ListAdapter<ChatMessage, ChatAdapter.ChatHolder>(ChatDiffUtil(context, number)) {
 
     class ChatDiffUtil(val context: Context, val number: String) :
         DiffUtil.ItemCallback<ChatMessage>() {
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
             val check = oldItem.id == newItem.id
-            Log.d("TEST", "areItemsTheSame: $check")
+            Log.d("LetsTalkApplication", "areItemsTheSame: $check")
             if (!check && newItem.to == number) {
                 (context as ChatActivity).markSeen()
-                Log.d("TEST", "areItemsTheSame: Mark Seen")
+                Log.d("LetsTalkApplication", "areItemsTheSame: Mark Seen")
             }
             return check
         }
 
         override fun areContentsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
-            return oldItem.msgStats == newItem.msgStats
+            return oldItem == newItem
         }
 
     }

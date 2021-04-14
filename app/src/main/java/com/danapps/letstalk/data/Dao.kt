@@ -1,7 +1,6 @@
 package com.danapps.letstalk.data
 
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.*
 import androidx.room.Dao
 import com.danapps.letstalk.models.ChatMessage
@@ -61,5 +60,5 @@ interface Dao {
     suspend fun markSeen(from: String, to: String)
 
     @Query("SELECT * FROM chatmessage WHERE `from` = :from AND `to` = :to OR `from` = :to AND `to` = :from")
-    fun getChats(from: String, to: String): DataSource.Factory<Int, ChatMessage>
+    fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
 }
