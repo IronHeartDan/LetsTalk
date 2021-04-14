@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.adapters.ChatAdapter
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
+import com.danapps.letstalk.models.SetOnline
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -44,12 +45,14 @@ class ChatActivity : AppCompatActivity() {
             )
 
         contact = Gson().fromJson(intent.extras?.get("contact").toString(), Contact::class.java)
-
         supportActionBar?.title = contact.name
+
+
 
 
         myNumber = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.substring(3)
         mSocket = (application as LetsTalkApplication).mSocket
+        mSocket.emit("setOnline", Gson().toJson(SetOnline(myNumber, true)))
         markSeen()
         mSocket.emit("enterRoom", contact.number)
         mSocket.emit("isOnline", contact.number)
@@ -79,7 +82,7 @@ class ChatActivity : AppCompatActivity() {
 
         letsTalkViewModel.getChats(myNumber, contact.number).observe(this, {
             adapter.submitList(it)
-            messagesList.smoothScrollToPosition(adapter.itemCount+1)
+            messagesList.smoothScrollToPosition(adapter.itemCount + 1)
         })
 
         var timer = Timer()

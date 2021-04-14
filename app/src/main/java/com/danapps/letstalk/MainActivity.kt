@@ -24,6 +24,7 @@ import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
+import com.danapps.letstalk.models.SetOnline
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mSocket = (application as LetsTalkApplication).mSocket
-        mSocket.emit("setOnline", Gson().toJson(setOnline(number, true)))
+        mSocket.emit("setOnline", Gson().toJson(SetOnline(number, true)))
 
         letsTalkViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(
@@ -352,8 +353,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mSocket.emit("setOnline", Gson().toJson(setOnline(number, false)))
+        mSocket.emit("setOnline", Gson().toJson(SetOnline(number, false)))
     }
 
-    data class setOnline(val number: String, val status: Boolean)
 }
