@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -21,24 +20,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LetsTalk"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".activities.ProfileActivity" />
+        <activity
+            android:name=".activities.ChatActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InitActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activities.InitActivity" />
+        <activity android:name=".activities.MainActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <service android:name=".PushNotificationService"
+        <service
+            android:name=".PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -11,7 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.danapps.letstalk.LetsTalkApplication
-import com.danapps.letstalk.SplashActivity
+import com.danapps.letstalk.activities.SplashActivity
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.contentproviders.MediaLiveData
 import com.danapps.letstalk.data.Dao

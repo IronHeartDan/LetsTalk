@@ -1,4 +1,4 @@
-package com.danapps.letstalk
+package com.danapps.letstalk.activities
 
 import android.Manifest
 import android.app.ActivityOptions
@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.danapps.letstalk.LetsTalkApplication
+import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.NewChatAdapter

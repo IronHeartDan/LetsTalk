@@ -1,4 +1,4 @@
-package com.danapps.letstalk
+package com.danapps.letstalk.activities
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth

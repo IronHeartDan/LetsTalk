@@ -1,16 +1,14 @@
 package com.danapps.letstalk.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.danapps.letstalk.ChatActivity
+import com.danapps.letstalk.activities.ChatActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.ChatMessage
 import kotlinx.android.synthetic.main.chat_item_left.view.*
@@ -23,10 +21,8 @@ class ChatAdapter(val context: Context, val number: String) :
         DiffUtil.ItemCallback<ChatMessage>() {
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
             val check = oldItem.id == newItem.id
-            Log.d("LetsTalkApplication", "areItemsTheSame: $check")
             if (!check && newItem.to == number) {
                 (context as ChatActivity).markSeen()
-                Log.d("LetsTalkApplication", "areItemsTheSame: Mark Seen")
             }
             return check
         }

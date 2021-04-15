@@ -4,4 +4,4 @@
     android:id="@+id/seeProfileFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity" />
+    tools:context=".activities.ProfileActivity" />

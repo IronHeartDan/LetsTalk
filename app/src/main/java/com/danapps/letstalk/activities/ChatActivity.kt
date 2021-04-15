@@ -1,4 +1,4 @@
-package com.danapps.letstalk
+package com.danapps.letstalk.activities
 
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +13,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.danapps.letstalk.LetsTalkApplication
+import com.danapps.letstalk.R
 import com.danapps.letstalk.adapters.ChatAdapter
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
@@ -173,8 +175,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        mSocket.emit("exitRoom", contact.number)
-        mSocket.off("isOnline")
         onBackPressed()
         return true
     }

@@ -9,6 +9,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import com.danapps.letstalk.Constants.Companion.BASE_URL
+import com.danapps.letstalk.activities.ChatActivity
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
 import com.danapps.letstalk.models.ChatMessage

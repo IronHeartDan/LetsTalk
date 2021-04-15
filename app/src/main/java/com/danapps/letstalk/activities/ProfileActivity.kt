@@ -1,7 +1,8 @@
-package com.danapps.letstalk
+package com.danapps.letstalk.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.danapps.letstalk.R
 import com.danapps.letstalk.fragments.InitTwoFragment
 
 class ProfileActivity : AppCompatActivity() {

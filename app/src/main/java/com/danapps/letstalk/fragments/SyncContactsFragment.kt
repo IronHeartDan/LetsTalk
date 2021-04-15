@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.danapps.letstalk.InitActivity
+import com.danapps.letstalk.activities.InitActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import kotlinx.android.synthetic.main.fragment_sync_contacts.view.*

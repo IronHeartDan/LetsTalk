@@ -1,4 +1,4 @@
-package com.danapps.letstalk
+package com.danapps.letstalk.activities
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.danapps.letstalk.R
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth
 
