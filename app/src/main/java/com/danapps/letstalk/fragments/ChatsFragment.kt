@@ -1,7 +1,7 @@
 package com.danapps.letstalk.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danapps.letstalk.R
+import com.danapps.letstalk.activities.ChatActivity
 import com.danapps.letstalk.adapters.ChatsAdapter
+import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_chats.view.*
 
 class ChatsFragment : Fragment() {
@@ -43,21 +46,26 @@ class ChatsFragment : Fragment() {
         letsTalkViewModel.getChats(
             number
         ).observe(requireActivity(), {
-            adapter.submitList(it)
-            Log.d("LetsTalkApplication", "onCreateView: ${it.size}")
+            if (it.isNotEmpty()) {
+                adapter.submitList(it)
+                view.noChatsFound.visibility = View.GONE
+            } else {
+                view.noChatsFound.visibility = View.VISIBLE
+                view.allChatsList.visibility = View.GONE
+            }
         })
 
-//        adapter.setNewChatClickListener(object : NewChatAdapter.NewChatClickListener {
-//            override fun onClick(contact: Contact) {
-//                val intent = Intent(requireActivity(), ChatActivity::class.java)
-//                intent.putExtra(
-//                    "contact",
-//                    Gson().toJson(contact)
-//                )
-//                startActivity(intent)
-//            }
-//
-//        })
+        adapter.setOnChatClickListener(object : ChatsAdapter.ChatclickListener {
+            override fun onClick(contact: Contact) {
+                val intent = Intent(requireActivity(), ChatActivity::class.java)
+                intent.putExtra(
+                    "contact",
+                    Gson().toJson(contact)
+                )
+                startActivity(intent)
+            }
+
+        })
 
         return view
     }
