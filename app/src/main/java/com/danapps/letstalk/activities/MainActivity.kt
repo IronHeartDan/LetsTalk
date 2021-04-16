@@ -20,7 +20,7 @@ import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
 import com.danapps.letstalk.adapters.FragmentAdapter
-import com.danapps.letstalk.adapters.NewChatAdapter
+import com.danapps.letstalk.adapters.ContactsAdapter
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
 import com.danapps.letstalk.models.Contact
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var letsTalkViewModel: LetsTalkViewModel
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-    private val newChatAdapter = NewChatAdapter()
+    private val newChatAdapter = ContactsAdapter()
     private var contactsSet = false
     private lateinit var mSocket: Socket
     private lateinit var number: String
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         newChatList.layoutManager = LinearLayoutManager(this)
         newChatList.adapter = newChatAdapter
 
-        newChatAdapter.setNewChatClickListener(object : NewChatAdapter.NewChatClickListener {
+        newChatAdapter.setNewChatClickListener(object : ContactsAdapter.NewChatClickListener {
             override fun onClick(contact: Contact) {
                 val intent = Intent(this@MainActivity, ChatActivity::class.java)
                 intent.putExtra(

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.Dao
 import com.danapps.letstalk.models.ChatMessage
+import com.danapps.letstalk.models.Chats
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.User
 
@@ -60,5 +61,13 @@ interface Dao {
     suspend fun markSeen(from: String, to: String)
 
     @Query("SELECT * FROM chatmessage WHERE `from` = :from AND `to` = :to OR `from` = :to AND `to` = :from")
-    fun getChats(from: String, to: String): LiveData<List<ChatMessage>>
+    fun getConversation(from: String, to: String): LiveData<List<ChatMessage>>
+
+//    @Query("SELECT  u1.name, u1.profile_pic, u2.name , u2.profile_pic , c.msgStats, c.msg ,c.conId    FROM chatmessage c JOIN contact u1 ON c.`from` = u1.number JOIN contact u2 ON c.`to` = u2.number WHERE c.id IN (SELECT MAX(Id) FROM chatmessage GROUP BY conId) ORDER BY c.id DESC ")
+//    fun getChats(): LiveData<List<Chats>>
+
+
+    @Query("SELECT  name,profile_pic,msg, who  from contact  c join (SELECT  msg ,  CASE WHEN  `from` = :number THEN `to`  ELSE  `from`  END as who  FROM chatmessage  c  WHERE id IN (SELECT MAX(id)  FROM chatmessage GROUP BY conId) ORDER BY id DESC) as vt on c.number=vt.who;")
+    fun getChats(number: String): LiveData<List<Chats>>
+
 }

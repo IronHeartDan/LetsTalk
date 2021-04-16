@@ -11,12 +11,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.danapps.letstalk.LetsTalkApplication
-import com.danapps.letstalk.activities.SplashActivity
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
+import com.danapps.letstalk.activities.SplashActivity
 import com.danapps.letstalk.contentproviders.MediaLiveData
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.RetroFitBuilder
 import com.danapps.letstalk.models.ChatMessage
+import com.danapps.letstalk.models.Chats
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.User
 import kotlinx.coroutines.launch
@@ -39,6 +40,10 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
 
     //Chat System
 
+    fun getChats(number: String): LiveData<List<Chats>> {
+        return dao.getChats(number)
+    }
+
     suspend fun insertChat(chatMessage: ChatMessage): Long {
         return dao.insertChat(chatMessage)
     }
@@ -56,7 +61,7 @@ class LetsTalkViewModel(private val viewModelApplication: Application) :
     }
 
     fun getChats(from: String, to: String): LiveData<List<ChatMessage>> {
-        return dao.getChats(from, to)
+        return dao.getConversation(from, to)
     }
 
 

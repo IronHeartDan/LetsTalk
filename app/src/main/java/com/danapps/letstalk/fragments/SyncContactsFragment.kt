@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.danapps.letstalk.activities.InitActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
+import com.danapps.letstalk.activities.InitActivity
 import kotlinx.android.synthetic.main.fragment_sync_contacts.view.*
 
 class SyncContactsFragment : Fragment() {
@@ -21,6 +21,7 @@ class SyncContactsFragment : Fragment() {
 
         view.initSyncContacts.setOnClickListener {
             it.isEnabled = false
+            view.initContactsLater.isEnabled = false
             view.syncContactsProgressBar.visibility = View.VISIBLE
             (activity as InitActivity).syncContacts(object : ContactsSyncInterface {
                 override fun finished() {
@@ -31,6 +32,7 @@ class SyncContactsFragment : Fragment() {
                 override fun error(error: String?) {
                     view.syncContactsProgressBar.visibility = View.GONE
                     it.isEnabled = true
+                    view.initContactsLater.isEnabled = true
                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                 }
 

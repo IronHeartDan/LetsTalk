@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ChatMessage(
+    var conId: String?,
     val from: String,
     val to: String,
     val msg: String,

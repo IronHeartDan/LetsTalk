@@ -14,8 +14,8 @@ import com.danapps.letstalk.models.ChatMessage
 import kotlinx.android.synthetic.main.chat_item_left.view.*
 import kotlinx.android.synthetic.main.chat_item_right.view.*
 
-class ChatAdapter(val context: Context, val number: String) :
-    ListAdapter<ChatMessage, ChatAdapter.ChatHolder>(ChatDiffUtil(context, number)) {
+class MessageAdapter(val context: Context, val number: String) :
+    ListAdapter<ChatMessage, MessageAdapter.ContactsViewHolder>(ChatDiffUtil(context, number)) {
 
     class ChatDiffUtil(val context: Context, val number: String) :
         DiffUtil.ItemCallback<ChatMessage>() {
@@ -33,9 +33,9 @@ class ChatAdapter(val context: Context, val number: String) :
 
     }
 
-    class ChatHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ContactsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsViewHolder {
         val view = when (viewType) {
             0 -> {
                 LayoutInflater.from(parent.context).inflate(R.layout.chat_item_right, parent, false)
@@ -50,10 +50,10 @@ class ChatAdapter(val context: Context, val number: String) :
             else -> null
         }
 
-        return ChatHolder(view!!)
+        return ContactsViewHolder(view!!)
     }
 
-    override fun onBindViewHolder(holder: ChatHolder, position: Int) {
+    override fun onBindViewHolder(holder: ContactsViewHolder, position: Int) {
         if (getItem(position) != null) {
             if (getItem(position)!!.from == number) {
                 holder.itemView.chat_message_right.text = getItem(position)!!.msg

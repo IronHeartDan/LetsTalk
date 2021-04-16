@@ -79,7 +79,9 @@ class LetsTalkApplication : Application() {
 
         mSocket.on("message") {
             val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            val conId = ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
             val chatMessage = ChatMessage(
+                conId = conId,
                 from = msgParcel.from,
                 to = msgParcel.to,
                 msg = msgParcel.msg,
@@ -93,6 +95,8 @@ class LetsTalkApplication : Application() {
 
         mSocket.on("msgStats") {
             val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
+            val conId = ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
+            msgParcel.conId = conId
             GlobalScope.launch {
                 dao.updateChat(msgParcel)
             }

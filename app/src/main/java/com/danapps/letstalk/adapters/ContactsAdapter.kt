@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.Contact
-import kotlinx.android.synthetic.main.new_chat_item.view.*
+import kotlinx.android.synthetic.main.new_contact_item.view.*
 
-class NewChatAdapter :
-    ListAdapter<Contact, NewChatAdapter.NewChatHolder>(DiffCallback()) {
+class ContactsAdapter :
+    ListAdapter<Contact, ContactsAdapter.NewChatHolder>(DiffCallback()) {
 
     private lateinit var listener: NewChatClickListener
 
@@ -35,13 +35,13 @@ class NewChatAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewChatHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.new_chat_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.new_contact_item, parent, false)
         return NewChatHolder(view)
     }
 
     override fun onBindViewHolder(holder: NewChatHolder, position: Int) {
-        holder.itemView.new_chat_itemName.text = getItem(position).name
-        holder.itemView.new_chat_itemNumber.text = getItem(position).number
+        holder.itemView.new_contact_itemName.text = getItem(position).name
+        holder.itemView.new_contact_itemNumber.text = getItem(position).number
     }
 
     interface NewChatClickListener {

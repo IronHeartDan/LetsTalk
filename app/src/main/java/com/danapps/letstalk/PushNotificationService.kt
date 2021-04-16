@@ -73,7 +73,9 @@ class PushNotificationService : FirebaseMessagingService() {
 
 
         // Save And Acknowledgement
+        val conId = ((msg.from.toLong() / 725760) + (msg.to.toLong() / 725760)).toString()
         val chatMessage = ChatMessage(
+            conId,
             msg.from,
             msg.to,
             msg.msg,

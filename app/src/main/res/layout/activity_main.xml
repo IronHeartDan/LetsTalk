@@ -125,25 +125,25 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
-                <include layout="@layout/new_chat_item_place_holder" />
+                <include layout="@layout/new_contact_item_place_holder" />
 
             </LinearLayout>
 

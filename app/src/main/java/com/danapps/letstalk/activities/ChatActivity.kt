@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.R
-import com.danapps.letstalk.adapters.ChatAdapter
+import com.danapps.letstalk.adapters.MessageAdapter
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.models.SetOnline
@@ -69,7 +69,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
 
-        val adapter = ChatAdapter(this, myNumber)
+        val adapter = MessageAdapter(this, myNumber)
         val layoutManager = LinearLayoutManager(this)
         layoutManager.stackFromEnd = true
         messagesList.layoutManager = layoutManager
@@ -135,8 +135,11 @@ class ChatActivity : AppCompatActivity() {
         sendMessage.setOnClickListener {
             val msg = message.text.toString().trim()
             if (!TextUtils.isEmpty(msg)) {
+                val conId =
+                    ((contact.number.toLong() / 725760) + (myNumber.toLong() / 725760)).toString()
                 val chatMessage =
                     ChatMessage(
+                        conId = conId,
                         from = myNumber,
                         to = contact.number,
                         msg = msg,
