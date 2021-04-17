@@ -7,5 +7,6 @@ data class Chats(
     val msg: String,
     val name: String,
     val profile_pic: String?,
-    val who: String
+    val who: String,
+    val msgStats: Int?
 )

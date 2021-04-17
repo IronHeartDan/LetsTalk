@@ -1,8 +1,11 @@
 package com.danapps.letstalk.adapters
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +14,8 @@ import com.danapps.letstalk.models.Chats
 import com.danapps.letstalk.models.Contact
 import kotlinx.android.synthetic.main.item_chat_layout.view.*
 
-class ChatsAdapter : ListAdapter<Chats, ChatsAdapter.ChatHolder>(ChatsDiff()) {
+class ChatsAdapter(val context: Context) :
+    ListAdapter<Chats, ChatsAdapter.ChatHolder>(ChatsDiff()) {
 
     private lateinit var chatclickListener: ChatclickListener
 
@@ -44,6 +48,41 @@ class ChatsAdapter : ListAdapter<Chats, ChatsAdapter.ChatHolder>(ChatsDiff()) {
     override fun onBindViewHolder(holder: ChatHolder, position: Int) {
         holder.itemView.chat_item_name.text = getItem(position).name
         holder.itemView.chat_item_msg.text = getItem(position).msg
+
+
+        if (getItem(position).msgStats != null) {
+            Log.d("TEST", "onBindViewHolder: ")
+            holder.itemView.chat_msgStats.visibility = View.VISIBLE
+            when (getItem(position)!!.msgStats) {
+                1 -> holder.itemView.chat_msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_to_server
+                    )
+                )
+                2 -> holder.itemView.chat_msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_to_user
+                    )
+                )
+                3 -> holder.itemView.chat_msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_seen
+                    )
+                )
+                else -> holder.itemView.chat_msgStats?.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_msg_sending
+                    )
+                )
+            }
+        } else {
+            holder.itemView.chat_msgStats.visibility = View.GONE
+        }
+
     }
 
     interface ChatclickListener {

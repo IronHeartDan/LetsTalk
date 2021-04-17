@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.danapps.letstalk.R
 import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.adapters.ChatsAdapter
@@ -39,9 +41,16 @@ class ChatsFragment : Fragment() {
                 LetsTalkViewModel::class.java
             )
 
-        val adapter = ChatsAdapter()
+        val adapter = ChatsAdapter(requireContext())
         view.allChatsList.adapter = adapter
         view.allChatsList.layoutManager = LinearLayoutManager(context)
+
+        val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+        view.allChatsList.itemAnimator = itemAnimator
 
         letsTalkViewModel.getChats(
             number
