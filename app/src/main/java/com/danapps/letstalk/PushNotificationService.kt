@@ -5,8 +5,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.danapps.letstalk.activities.ChatActivity
 import com.danapps.letstalk.activities.MainActivity
+import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.models.ChatMessage
 import com.danapps.letstalk.models.Contact
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -43,10 +43,13 @@ class PushNotificationService : FirebaseMessagingService() {
             }
             "3" -> {
                 Log.d("LetsTalkApplication", "onMessageReceived: 3")
-                Log.d("LetsTalkApplication", "onMessageReceived: ${remoteMessage.data["data_seen"]}")
+                Log.d(
+                    "LetsTalkApplication",
+                    "onMessageReceived: ${remoteMessage.data["data_seen"]}"
+                )
                 val markSeen = Gson().fromJson(
                     remoteMessage.data["data_seen"],
-                    ChatActivity.MarkSeen::class.java
+                    MessageActivity.MarkSeen::class.java
                 )
                 GlobalScope.launch {
                     application.dao.markSeen(markSeen.to, markSeen.from)
@@ -102,7 +105,7 @@ class PushNotificationService : FirebaseMessagingService() {
         Log.d("LetsTalkApplication", "setNoti:")
         val id = ((chatMessage.from.toLong() / 725760) + (chatMessage.to.toLong() / 725760)).toInt()
 
-        val chatIntent = Intent(this, ChatActivity::class.java)
+        val chatIntent = Intent(this, MessageActivity::class.java)
         val mainIntent = Intent(this, MainActivity::class.java)
 
         chatIntent.putExtra(
@@ -110,9 +113,18 @@ class PushNotificationService : FirebaseMessagingService() {
             Gson().toJson(contact)
         )
 
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, chatIntent, PendingIntent.FLAG_ONE_SHOT
+//        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+//            // Add the intent, which inflates the back stack
+//            addNextIntentWithParentStack(chatIntent)
+//            // Get the PendingIntent containing the entire back stack
+//            getPendingIntent(0, PendingIntent.FLAG_NO_CREATE)
+//        }
+
+        val pendingIntent = PendingIntent.getActivities(
+            applicationContext,
+            0, arrayOf(mainIntent, chatIntent), PendingIntent.FLAG_ONE_SHOT
         )
+
 
         val builder = NotificationCompat.Builder(this, "121212")
             .setContentTitle(contact.name)

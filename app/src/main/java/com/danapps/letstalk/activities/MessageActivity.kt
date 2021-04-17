@@ -23,19 +23,19 @@ import com.danapps.letstalk.viewmodel.LetsTalkViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import io.socket.client.Socket
-import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.activity_message.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ChatActivity : AppCompatActivity() {
+class MessageActivity : AppCompatActivity() {
     private lateinit var letsTalkViewModel: LetsTalkViewModel
     private lateinit var mSocket: Socket
     private lateinit var myNumber: String
     private lateinit var contact: Contact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+        setContentView(R.layout.activity_message)
 
         setSupportActionBar(chatToolBar)
         supportActionBar?.setDisplayShowHomeEnabled(true)

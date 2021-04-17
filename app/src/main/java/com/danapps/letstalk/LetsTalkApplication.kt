@@ -9,7 +9,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import com.danapps.letstalk.Constants.Companion.BASE_URL
-import com.danapps.letstalk.activities.ChatActivity
+import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
 import com.danapps.letstalk.models.ChatMessage
@@ -105,7 +105,7 @@ class LetsTalkApplication : Application() {
 
 
         mSocket.on("markSeen") {
-            val markSeen = Gson().fromJson(it[0].toString(), ChatActivity.MarkSeen::class.java)
+            val markSeen = Gson().fromJson(it[0].toString(), MessageActivity.MarkSeen::class.java)
             GlobalScope.launch {
                 dao.markSeen(markSeen.to, markSeen.from)
             }

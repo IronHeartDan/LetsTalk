@@ -5,6 +5,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,8 +20,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.R
 import com.danapps.letstalk.`interface`.ContactsSyncInterface
-import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.adapters.ContactsAdapter
+import com.danapps.letstalk.adapters.FragmentAdapter
 import com.danapps.letstalk.fragments.CameraFragment
 import com.danapps.letstalk.fragments.ChatsFragment
 import com.danapps.letstalk.models.Contact
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         newChatAdapter.setNewChatClickListener(object : ContactsAdapter.NewChatClickListener {
             override fun onClick(contact: Contact) {
-                val intent = Intent(this@MainActivity, ChatActivity::class.java)
+                val intent = Intent(this@MainActivity, MessageActivity::class.java)
                 intent.putExtra(
                     "contact",
                     Gson().toJson(contact)
@@ -323,6 +324,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("LetsTalkApplication", "onDestroy: ")
         mSocket.emit("setOnline", Gson().toJson(SetOnline(number, false)))
     }
 

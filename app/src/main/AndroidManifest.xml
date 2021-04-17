@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.ProfileActivity" />
         <activity
-            android:name=".activities.ChatActivity"
+            android:name=".activities.MessageActivity"
             android:parentActivityName=".activities.MainActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.InitActivity" />
-        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.MainActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

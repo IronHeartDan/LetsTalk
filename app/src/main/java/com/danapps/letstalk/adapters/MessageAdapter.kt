@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.danapps.letstalk.activities.ChatActivity
+import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.ChatMessage
 import kotlinx.android.synthetic.main.chat_item_left.view.*
@@ -22,7 +22,7 @@ class MessageAdapter(val context: Context, val number: String) :
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage): Boolean {
             val check = oldItem.id == newItem.id
             if (!check && newItem.to == number) {
-                (context as ChatActivity).markSeen()
+                (context as MessageActivity).markSeen()
             }
             return check
         }

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danapps.letstalk.R
-import com.danapps.letstalk.activities.ChatActivity
+import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.adapters.ChatsAdapter
 import com.danapps.letstalk.models.Contact
 import com.danapps.letstalk.viewmodel.LetsTalkViewModel
@@ -49,6 +49,8 @@ class ChatsFragment : Fragment() {
             if (it.isNotEmpty()) {
                 adapter.submitList(it)
                 view.noChatsFound.visibility = View.GONE
+                view.allChatsList.visibility = View.VISIBLE
+
             } else {
                 view.noChatsFound.visibility = View.VISIBLE
                 view.allChatsList.visibility = View.GONE
@@ -57,7 +59,7 @@ class ChatsFragment : Fragment() {
 
         adapter.setOnChatClickListener(object : ChatsAdapter.ChatclickListener {
             override fun onClick(contact: Contact) {
-                val intent = Intent(requireActivity(), ChatActivity::class.java)
+                val intent = Intent(requireActivity(), MessageActivity::class.java)
                 intent.putExtra(
                     "contact",
                     Gson().toJson(contact)
