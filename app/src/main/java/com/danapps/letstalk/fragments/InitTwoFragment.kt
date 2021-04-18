@@ -78,7 +78,7 @@ class InitTwoFragment : Fragment() {
         letsTalkViewModel.liveUser(number).observe(requireActivity(), {
             currentUser = it
             if (currentUser != null) {
-                if (currentUser!!.profile_pic != null) {
+                if (!currentUser!!.profile_pic.equals("null")) {
                     Glide.with(requireContext()).load(currentUser!!.profile_pic)
                         .into(view.showInitPicture)
                 }

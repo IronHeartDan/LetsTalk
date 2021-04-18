@@ -1,13 +1,15 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="primaryColor">#ffcdd2</color>
+
+    <color name="primaryColor">#ffffff</color>
     <color name="primaryLightColor">#ffffff</color>
-    <color name="primaryDarkColor">#cb9ca1</color>
-    <color name="secondaryColor">#212121</color>
-    <color name="secondaryLightColor">#484848</color>
+    <color name="primaryDarkColor">#cccccc</color>
+    <color name="secondaryColor">#000000</color>
+    <color name="secondaryLightColor">#2c2c2c</color>
     <color name="secondaryDarkColor">#000000</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#ffffff</color>
+
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>

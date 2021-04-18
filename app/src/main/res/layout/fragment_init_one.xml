@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColor"
+    android:background="@color/black"
     tools:context=".fragments.InitOneFragment">
 
 
@@ -56,12 +56,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/outlinedTextField"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/CustomInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Number"
-                    app:boxCornerRadiusTopStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -89,7 +89,7 @@
 
             <Button
                 android:id="@+id/enterNumber"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/CustomButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:tag="0"

@@ -67,7 +67,10 @@ interface Dao {
 //    fun getChats(): LiveData<List<Chats>>
 
 
-    @Query("SELECT  name,profile_pic,msg,msgStats,who from contact  c join (SELECT  msg , msgStats,  CASE WHEN  `from` = :number THEN `to`  ELSE  `from`  END as who  FROM chatmessage  c  WHERE id IN (SELECT MAX(id)  FROM chatmessage GROUP BY conId) ORDER BY id DESC) as vt on c.number=vt.who;")
-    fun getChats(number: String): LiveData<List<Chats>>
+//    @Query("SELECT  name,profile_pic,msg,msgStats,who from contact  c join (SELECT  msg , msgStats,  CASE WHEN  `from` = :number THEN `to`  ELSE  `from`  END as who  FROM chatmessage  c  WHERE id IN (SELECT MAX(id)  FROM chatmessage GROUP BY conId) ORDER BY id DESC) as vt on c.number=vt.who;")
+//    fun getChats(number: String): LiveData<List<Chats>>
 
+
+    @Query("with chats as (SELECT  msg , msgStats,  CASE WHEN  `from` = :number THEN `to`  ELSE  `from`  END as who  FROM chatmessage  as c  WHERE id IN ( SELECT MAX(id)  FROM chatmessage GROUP BY conId) ORDER BY id DESC) select * from chats left join contact on chats.who =contact.number")
+    fun getChats(number: String): LiveData<List<Chats>>
 }

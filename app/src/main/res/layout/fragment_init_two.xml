@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColor"
     tools:context=".fragments.InitTwoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +44,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/outlinedTextField"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/CustomInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -63,7 +62,7 @@
 
                 <Button
                     android:id="@+id/initLetsGo"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/CustomButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Let's Go" />

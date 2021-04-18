@@ -1,18 +1,24 @@
 package com.danapps.letstalk.activities
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.danapps.letstalk.LetsTalkApplication
 import com.danapps.letstalk.R
 import com.danapps.letstalk.adapters.MessageAdapter
@@ -37,7 +43,8 @@ class MessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
 
-        setSupportActionBar(chatToolBar)
+
+        setSupportActionBar(msgToolBar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -47,8 +54,13 @@ class MessageActivity : AppCompatActivity() {
             )
 
         contact = Gson().fromJson(intent.extras?.get("contact").toString(), Contact::class.java)
-        supportActionBar?.title = contact.name
+        msg_title.text = contact.name
 
+        if (contact.profile_pic != null) {
+            Glide.with(this).load(Uri.parse(contact.profile_pic)).centerCrop().into(msg_acc_pic)
+        } else {
+            Glide.with(this).load(R.drawable.ic_account_circle).centerCrop().into(msg_acc_pic)
+        }
 
 
 
@@ -60,10 +72,11 @@ class MessageActivity : AppCompatActivity() {
         mSocket.emit("isOnline", contact.number)
         mSocket.on("isOnline") {
             runOnUiThread {
+                msg_subtitle.visibility = View.VISIBLE
                 if (it[0] == true) {
-                    supportActionBar?.subtitle = "Online"
+                    msg_subtitle.text = "Online"
                 } else {
-                    supportActionBar?.subtitle = "Offline"
+                    msg_subtitle.text = "Offline"
                 }
             }
         }
@@ -122,12 +135,13 @@ class MessageActivity : AppCompatActivity() {
         mSocket.on("typing") {
             val showTyping = Gson().fromJson(it[0].toString(), ShowTyping::class.java)
             if (showTyping.typing) {
+                msg_subtitle.visibility = View.VISIBLE
                 runOnUiThread {
-                    supportActionBar?.subtitle = "Typing"
+                    msg_subtitle.text = "Typing"
                 }
             } else {
                 runOnUiThread {
-                    supportActionBar?.subtitle = "Online"
+                    msg_subtitle.text = "Online"
                 }
             }
         }
@@ -163,7 +177,7 @@ class MessageActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.chat_menu, menu)
+        menuInflater.inflate(R.menu.message_menu, menu)
         return true
     }
 

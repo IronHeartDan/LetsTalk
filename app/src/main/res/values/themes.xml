@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.LetsTalk" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
@@ -10,9 +10,9 @@
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >?attr/colorPrimary</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
-        <item name="tabStyle">@style/Widget.App.TabLayout</item>
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
@@ -23,8 +23,29 @@
 
     </style>
 
+    <style name="CustomButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+    <style name="CustomInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">@color/black</item>
+        //Activated color
+        <item name="colorOnSurface">@color/black</item>
+        //Normal color
+        <item name="colorError">@color/black</item>
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+
     <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
+        <item name="cardElevation">100dp</item>
     </style>
 
     <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
@@ -40,25 +61,5 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
-    <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="android:background">@color/primaryColor</item>
-        <item name="tabIndicatorColor">@color/secondaryDarkColor</item>
-        <item name="tabTextColor">@color/white</item>
-        <item name="tabSelectedTextColor">@color/secondaryLightColor</item>
-        <item name="tabTextAppearance">@style/TextAppearance.AppCompat.Small</item>
-        <item name="tabIndicatorFullWidth">false</item>
-    </style>
-
-
-    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
-    </style>
-
-
-    <style name="ThemeOverlay.App.TabLayout" parent="">
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorSurface">@color/primaryColor</item>
-        <item name="colorOnSurface">@color/black</item>
-    </style>
 
 </resources>

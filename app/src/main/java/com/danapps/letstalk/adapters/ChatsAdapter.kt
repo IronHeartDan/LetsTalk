@@ -34,7 +34,7 @@ class ChatsAdapter(val context: Context) :
         init {
             itemView.setOnClickListener {
                 val item = getItem(adapterPosition)
-                chatclickListener.onClick(Contact(item.name, item.profile_pic, item.who))
+                chatclickListener.onClick(Contact(item.name!!, item.profile_pic, item.who))
             }
         }
     }
@@ -46,6 +46,11 @@ class ChatsAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ChatHolder, position: Int) {
+
+        if(getItem(position).name == null){
+            getItem(position).name = getItem(position).who
+        }
+
         holder.itemView.chat_item_name.text = getItem(position).name
         holder.itemView.chat_item_msg.text = getItem(position).msg
 

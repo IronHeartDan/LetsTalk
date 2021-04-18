@@ -2,20 +2,19 @@
     <!-- Base application theme. -->
     <style name="Theme.LetsTalk" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorPrimary">@color/secondaryColor</item>
+        <item name="colorPrimaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnPrimary">@color/secondaryTextColor</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/secondaryColor</item>
-        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
-        <item name="colorOnSecondary">@color/secondaryTextColor</item>
+        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorSecondaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnSecondary">@color/primaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorSecondary</item>
-        <item name="android:navigationBarColor">?attr/colorSecondary</item>
+        <item name="android:statusBarColor">@color/secondaryColor</item>
+        <item name="android:navigationBarColor">@color/secondaryColor</item>
         <!-- Customize your theme here. -->
 
         <item name="toolbarStyle">@style/DarkToolBar</item>
-        <item name="tabStyle">@style/Widget.App.TabLayout</item>
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
@@ -25,6 +24,24 @@
 
     </style>
 
+    <style name="CustomButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CustomInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">@color/white</item>
+        //Activated color
+        <item name="colorOnSurface">@color/white</item>
+        //Normal color
+        <item name="colorError">@color/white</item>
+        //Error color
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
 
     <style name="DarkToolBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
@@ -33,19 +50,8 @@
     <style name="ThemeOverlay.App.Toolbar" parent="">
         <item name="colorPrimary">@color/secondaryColor</item>
         <item name="colorPrimaryVariant">@color/secondaryDarkColor</item>
-        <item name="colorOnPrimary">@color/secondaryTextColor</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
-
-    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
-    </style>
-
-
-    <style name="ThemeOverlay.App.TabLayout" parent="">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorSurface">@color/secondaryColor</item>
-        <item name="colorOnSurface">@color/white</item>
-    </style>
 
 </resources>
