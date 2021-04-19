@@ -2,11 +2,11 @@
     <!-- Base application theme. -->
     <style name="Theme.LetsTalk" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/secondaryColor</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnPrimary">@color/secondaryTextColor</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/primaryDarkColor</item>
         <item name="colorOnSecondary">@color/primaryTextColor</item>
         <!-- Status bar color. -->
@@ -24,32 +24,14 @@
 
     </style>
 
-    <style name="CustomButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="CustomInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
-    </style>
-
-    <style name="ThemeOverlay.App.TextInputLayout" parent="">
-        <item name="colorPrimary">@color/white</item>
-        //Activated color
-        <item name="colorOnSurface">@color/white</item>
-        //Normal color
-        <item name="colorError">@color/white</item>
-        //Error color
-        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
-        </item>
-    </style>
 
     <style name="DarkToolBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
     </style>
 
     <style name="ThemeOverlay.App.Toolbar" parent="">
-        <item name="colorPrimary">@color/secondaryColor</item>
-        <item name="colorPrimaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
