@@ -38,7 +38,7 @@ class ContactsSheet : BottomSheetDialogFragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.sheet_new_chat, container, false)
 
-        contactsAdapter = ContactsAdapter()
+        contactsAdapter = ContactsAdapter(requireContext())
         contactsAdapter.setNewChatClickListener(object : ContactsAdapter.NewChatClickListener {
             override fun onClick(contact: Contact) {
                 val intent = Intent(requireActivity(), MessageActivity::class.java)

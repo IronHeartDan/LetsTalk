@@ -14,6 +14,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
         <item name="toolbarStyle">@style/LightToolBar</item>
+        <item name="bottomSheetStyle">@style/CustomBottomSheet</item>
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
@@ -44,24 +45,7 @@
     <!--    </style>-->
 
 
-    <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
-        <item name="cardElevation">100dp</item>
-    </style>
-
-    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
-        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
-
-    <style name="CustomShapeAppearance">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">20dp</item>
-        <item name="cornerSizeTopLeft">20dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-    </style>
-
+    <!--    Toolbar-->
     <style name="LightToolBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
     </style>
@@ -71,6 +55,41 @@
         <item name="colorPrimaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnPrimary">@color/black</item>
     </style>
+    <!--    Toolbar-->
+
+
+    <!--    CardView BottomSheet-->
+    <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
+    </style>
+
+    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearance</item>
+    </style>
+
+    <style name="CustomShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+    <!--    CardView BottomSheet-->
+
+
+    <!--    Drawer-->
+    <style name="CustomDrawer" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/DrawerShape</item>
+    </style>
+
+    <style name="DrawerShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+    </style>
+    <!--    Drawer-->
 
 
 </resources>

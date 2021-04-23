@@ -1,16 +1,18 @@
 package com.danapps.letstalk.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.Contact
 import kotlinx.android.synthetic.main.new_contact_item.view.*
 
-class ContactsAdapter :
+class ContactsAdapter(val context: Context) :
     ListAdapter<Contact, ContactsAdapter.NewChatHolder>(DiffCallback()) {
 
     private lateinit var listener: NewChatClickListener
@@ -42,6 +44,14 @@ class ContactsAdapter :
     override fun onBindViewHolder(holder: NewChatHolder, position: Int) {
         holder.itemView.new_contact_itemName.text = getItem(position).name
         holder.itemView.new_contact_itemNumber.text = getItem(position).number
+
+        if (getItem(position).profile_pic.equals("null")) {
+            Glide.with(context).load(getItem(position).profile_pic).centerCrop()
+                .into(holder.itemView.new_contact_profile_pic)
+        } else {
+            Glide.with(context).load(R.drawable.ic_account_circle).centerCrop()
+                .into(holder.itemView.new_contact_profile_pic)
+        }
     }
 
     interface NewChatClickListener {

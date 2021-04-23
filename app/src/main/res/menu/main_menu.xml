@@ -3,15 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/seeProfile"
-        android:icon="@drawable/ic_account_circle"
-        android:title="Profile"
+        android:id="@+id/openCamera"
+        android:icon="@drawable/ic_camera"
+        android:title="Camera"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/seeStories"
+        android:icon="@drawable/ic_stories"
+        android:title="Stories"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/seeSettings"
-        android:title="Settings" />
-    <item
-        android:id="@+id/logOut"
-        android:title="LogOut" />
+        android:icon="@drawable/ic_settings"
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
+
 </menu>

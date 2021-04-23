@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import com.danapps.letstalk.Constants.Companion.BASE_URL
 import com.danapps.letstalk.activities.MessageActivity
 import com.danapps.letstalk.data.Dao
@@ -29,6 +30,8 @@ class LetsTalkApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        val theme = ThemeProvider(this).getThemeFromPreferences()
+        AppCompatDelegate.setDefaultNightMode(theme)
 
         database = LetsTalkDatabase.getDatabase(this)
         dao = database.dao()
@@ -79,7 +82,8 @@ class LetsTalkApplication : Application() {
 
         mSocket.on("message") {
             val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
-            val conId = ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
+            val conId =
+                ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
             val chatMessage = ChatMessage(
                 conId = conId,
                 from = msgParcel.from,
@@ -95,7 +99,8 @@ class LetsTalkApplication : Application() {
 
         mSocket.on("msgStats") {
             val msgParcel = Gson().fromJson(it[0].toString(), ChatMessage::class.java)
-            val conId = ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
+            val conId =
+                ((msgParcel.from.toLong() / 725760) + (msgParcel.to.toLong() / 725760)).toString()
             msgParcel.conId = conId
             GlobalScope.launch {
                 dao.updateChat(msgParcel)

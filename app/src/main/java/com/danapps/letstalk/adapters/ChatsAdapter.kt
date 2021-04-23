@@ -9,10 +9,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.danapps.letstalk.R
 import com.danapps.letstalk.models.Chats
 import com.danapps.letstalk.models.Contact
 import kotlinx.android.synthetic.main.item_chat_layout.view.*
+import kotlinx.android.synthetic.main.new_contact_item.view.*
 
 class ChatsAdapter(val context: Context) :
     ListAdapter<Chats, ChatsAdapter.ChatHolder>(ChatsDiff()) {
@@ -49,6 +51,12 @@ class ChatsAdapter(val context: Context) :
 
         if(getItem(position).name == null){
             getItem(position).name = getItem(position).who
+        }
+
+        if(getItem(position).profile_pic.equals("null")){
+            Glide.with(context).load(getItem(position).profile_pic).centerCrop().into(holder.itemView.chat_item_profile_pic)
+        }else{
+            Glide.with(context).load(R.drawable.ic_account_circle).centerCrop().into(holder.itemView.chat_item_profile_pic)
         }
 
         holder.itemView.chat_item_name.text = getItem(position).name

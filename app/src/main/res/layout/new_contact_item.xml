@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/new_contact_profile_pic"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@drawable/ic_account_circle" />

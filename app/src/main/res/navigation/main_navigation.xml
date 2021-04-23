@@ -13,9 +13,25 @@
         <action
             android:id="@+id/action_chatsFragment_to_contactsSheet"
             app:destination="@id/contactsSheet" />
+        <action
+            android:id="@+id/action_chatsFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <dialog
         android:id="@+id/contactsSheet"
         android:name="com.danapps.letstalk.sheets.ContactsSheet"
         android:label="ContactsSheet" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.danapps.letstalk.fragments.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.danapps.letstalk.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LetsTalk"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.MainActivity" />
         <activity android:name=".activities.ProfileActivity" />
         <activity
             android:name=".activities.MessageActivity"
@@ -32,8 +35,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.InitActivity" />
-        <activity android:name=".activities.MainActivity"
-            android:launchMode="singleTop"/>
+        <activity
+            android:name=".activities.MainActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
