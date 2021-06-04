@@ -14,12 +14,11 @@ import com.danapps.letstalk.R
 import com.danapps.letstalk.models.Chats
 import com.danapps.letstalk.models.Contact
 import kotlinx.android.synthetic.main.item_chat_layout.view.*
-import kotlinx.android.synthetic.main.new_contact_item.view.*
 
 class ChatsAdapter(val context: Context) :
     ListAdapter<Chats, ChatsAdapter.ChatHolder>(ChatsDiff()) {
 
-    private lateinit var chatclickListener: ChatclickListener
+    private lateinit var chatClickListener: ChatClickListener
 
     class ChatsDiff : DiffUtil.ItemCallback<Chats>() {
         override fun areItemsTheSame(oldItem: Chats, newItem: Chats): Boolean {
@@ -36,7 +35,7 @@ class ChatsAdapter(val context: Context) :
         init {
             itemView.setOnClickListener {
                 val item = getItem(adapterPosition)
-                chatclickListener.onClick(Contact(item.name!!, item.profile_pic, item.who))
+                chatClickListener.onClick(Contact(item.name!!, item.profile_pic, item.who))
             }
         }
     }
@@ -49,14 +48,18 @@ class ChatsAdapter(val context: Context) :
 
     override fun onBindViewHolder(holder: ChatHolder, position: Int) {
 
-        if(getItem(position).name == null){
+        if (getItem(position).name == null) {
             getItem(position).name = getItem(position).who
         }
 
-        if(getItem(position).profile_pic.equals("null")){
-            Glide.with(context).load(getItem(position).profile_pic).centerCrop().into(holder.itemView.chat_item_profile_pic)
-        }else{
-            Glide.with(context).load(R.drawable.ic_account_circle).centerCrop().into(holder.itemView.chat_item_profile_pic)
+        if (!getItem(position).profile_pic.equals("null")) {
+            Log.d("LetsTalkApplication", "HAS: ${getItem(position).profile_pic}")
+            Glide.with(context).load(getItem(position).profile_pic).centerCrop()
+                .into(holder.itemView.chat_item_profile_pic)
+        } else {
+            Log.d("LetsTalkApplication", "NOT: ")
+            Glide.with(context).load(R.drawable.ic_account_circle).centerCrop()
+                .into(holder.itemView.chat_item_profile_pic)
         }
 
         holder.itemView.chat_item_name.text = getItem(position).name
@@ -98,11 +101,11 @@ class ChatsAdapter(val context: Context) :
 
     }
 
-    interface ChatclickListener {
+    interface ChatClickListener {
         fun onClick(contact: Contact)
     }
 
-    fun setOnChatClickListener(chatclickListener: ChatclickListener) {
-        this.chatclickListener = chatclickListener
+    fun setOnChatClickListener(chatClickListener: ChatClickListener) {
+        this.chatClickListener = chatClickListener
     }
 }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="javascriptreact">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LetsTalk-RTC</title>
+    <script src="./adapter.js"></script>
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      .main_con {
+        width: 100vw;
+        height: 100vh;
+      }
+      #big-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all ease-in-out 1s;
+        opacity: 0;
+      }
+      #small-video {
+        margin: 10px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 150px;
+        box-shadow: 0 0 10px black;
+        transition: all ease-in-out 1s;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main_con" id="main_con">
+      <video autoplay muted id="big-video"></video>
+    </div>
+
+    <script>
+      //Connecting and Setting RTC
+      const pcConfig = {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          {
+            urls: "turn:numb.viagenie.ca",
+            username: "webrtc@live.com",
+            credential: "muazkh",
+          },
+        ],
+      };
+
+      const localConnection = new RTCPeerConnection(pcConfig);
+      var localOffer = null;
+
+      var main_con = document.getElementById("main_con");
+
+      //Set Stream
+      const localVideo = document.getElementById("big-video");
+      var localStream = null;
+      localVideo.onplay = () => {
+        localVideo.style.opacity = 1;
+      };
+
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: { echoCancellation: true, autoGainControl: true },
+          video: {
+            facingMode: "user",
+            width: { min: 480, ideal: 720, max: 1280 },
+            frameRate: { min: 24, ideal: 30, max: 60 },
+          },
+        })
+        .then((localStream) => {
+          //Show Local Stream
+          localVideo.srcObject = localStream;
+          localStream = localStream;
+
+          //Set Local Tracks To RTC
+          for (const track of localStream.getTracks()) {
+            localConnection.addTrack(track, localStream);
+          }
+          localConnection
+            .createOffer()
+            .then((o) =>
+              localConnection
+                .setLocalDescription(o)
+                .then(Android.localOfferSet(JSON.stringify(o)))
+            );
+          localConnection.ontrack = (e) => {
+            localVideo.id = "small-video";
+            var remoteVideo = document.createElement("video");
+            remoteVideo.id = "big-video";
+            remoteVideo.srcObject = e.streams[0];
+            main_con.prepend(remoteVideo);
+          };
+        })
+        .catch((e) => {
+          alert(e);
+        });
+
+      function setRemoteOffer(remoteOffer) {
+        localConnection.setRemoteDescription(remoteOffer).then(() => {
+          localConnection.createAnswer().then((a) => {
+            Android.answerSet(JSON.stringify(a));
+            localConnection.setLocalDescription(a);
+          });
+        });
+      }
+
+      function setAnswer(answer) {
+        localConnection.remoteDescription(answer);
+      }
+
+      function addIceCan() {}
+    </script>
+  </body>
+</html>

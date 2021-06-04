@@ -1,7 +1,6 @@
 package com.danapps.letstalk.activities
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -9,10 +8,10 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -39,6 +38,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var mSocket: Socket
     private lateinit var myNumber: String
     private lateinit var contact: Contact
+    private var isOnline = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
@@ -74,8 +74,10 @@ class MessageActivity : AppCompatActivity() {
             runOnUiThread {
                 msg_subtitle.visibility = View.VISIBLE
                 if (it[0] == true) {
+                    isOnline = true
                     msg_subtitle.text = "Online"
                 } else {
+                    isOnline = false
                     msg_subtitle.text = "Offline"
                 }
             }
@@ -181,9 +183,28 @@ class MessageActivity : AppCompatActivity() {
         return true
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return super.onOptionsItemSelected(item)
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val intent = Intent(this, RtcActivity::class.java)
+        intent.putExtra("from", myNumber)
+        intent.putExtra("to", contact.number)
+        intent.putExtra("type",0)
+        when (item.itemId) {
+            R.id.chat_call -> {
+                intent.putExtra("callType", 0)
+                startActivity(intent)
+            }
+            R.id.chat_videoCall -> {
+                intent.putExtra("callType", 1)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 
     override fun onDestroy() {
         mSocket.emit("exitRoom", contact.number)
@@ -191,10 +212,6 @@ class MessageActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
 
     fun markSeen() {
         mSocket.emit("markSeen", Gson().toJson(MarkSeen(myNumber, contact.number)))

@@ -59,7 +59,7 @@ class MediaLiveData(val context: Context) : MediaProviderLiveData<List<Media>>(c
                 val l = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
                 var uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 uri = ContentUris.withAppendedId(uri, l)
-                galleryMedia.add(Media(uri))
+                galleryMedia.add(Media(l, uri))
             }
             cursor.close()
         }

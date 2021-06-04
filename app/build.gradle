@@ -95,6 +95,8 @@ dependencies {
     //Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
 
+    // Country Picker
+    implementation 'com.hbb20:ccp:2.4.7'
 
     //Image Cropping
     implementation 'com.github.yalantis:ucrop:2.2.6-native'

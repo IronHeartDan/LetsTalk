@@ -3,6 +3,7 @@ package com.danapps.letstalk.fragments
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,10 +31,12 @@ class InitOneFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_init_one, container, false)
         mAuth = FirebaseAuth.getInstance()
 
+        view.ccp.registerCarrierNumberEditText(view.regNumber)
+
         mAuth = FirebaseAuth.getInstance()
         view.enterNumber.setOnClickListener {
-            val number = view.regNumber.text!!.trim().toString()
-            if (!TextUtils.isEmpty(number)) {
+            val number = view.ccp.fullNumberWithPlus
+            if (!TextUtils.isEmpty(number.substring(3))) {
                 view.showProgress.visibility = View.VISIBLE
                 view.enterNumber.isEnabled = false
                 if (view.enterNumber.tag == "0") {
@@ -45,7 +48,7 @@ class InitOneFragment : Fragment() {
 
 
                             val options = PhoneAuthOptions.newBuilder(mAuth)
-                                .setPhoneNumber("+91$number")       // Phone number to verify
+                                .setPhoneNumber(number)       // Phone number to verify
                                 .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
                                 .setActivity(requireActivity())                 // Activity (for callback binding)
                                 .setCallbacks(object :
@@ -58,6 +61,7 @@ class InitOneFragment : Fragment() {
                                         super.onCodeSent(p0, p1)
                                         verificationId = p0
                                         view.showProgress.visibility = View.GONE
+                                        view.ccp.visibility = View.GONE
                                         view.regInfo.text = "OTP Sent To $number"
                                         view.outlinedTextField.hint = "Enter OTP"
                                         view.regNumber.text!!.clear()
@@ -99,7 +103,9 @@ class InitOneFragment : Fragment() {
                         .create()
                         .show()
                 } else {
-                    val credential = PhoneAuthProvider.getCredential(verificationId, number)
+                    val code = view.regNumber.text.toString().trim()
+                    Log.d("LetsTalkApplication", "onCreateView: ${code.replace(" ","")}")
+                    val credential = PhoneAuthProvider.getCredential(verificationId, code.replace(" ",""))
                     signIn(credential)
                 }
             } else {
@@ -120,7 +126,7 @@ class InitOneFragment : Fragment() {
                         ?.navigate(R.id.action_initOneFragment_to_initTwoFragment)
                 } else {
                     showProgress.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), "Failed: ${it.exception?.message}", Toast.LENGTH_LONG)
                         .show()
                 }
             }

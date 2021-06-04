@@ -2,6 +2,7 @@ package com.danapps.letstalk.fragments
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -22,6 +23,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.danapps.letstalk.R
+import com.danapps.letstalk.activities.InitActivity
 import com.danapps.letstalk.adapters.MediaAdapter
 import com.danapps.letstalk.data.RetroFitBuilder
 import com.danapps.letstalk.models.Media
@@ -124,6 +126,12 @@ class InitTwoFragment : Fragment() {
             }
 
         })
+
+        view.logOut.setOnClickListener {
+            mAuth.signOut()
+            startActivity(Intent(activity, InitActivity::class.java))
+            activity?.finishAffinity()
+        }
 
         view.initPicture.setOnClickListener {
             if (ContextCompat.checkSelfPermission(

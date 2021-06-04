@@ -66,7 +66,7 @@ class ChatsFragment : Fragment() {
             }
         })
 
-        adapter.setOnChatClickListener(object : ChatsAdapter.ChatclickListener {
+        adapter.setOnChatClickListener(object : ChatsAdapter.ChatClickListener {
             override fun onClick(contact: Contact) {
                 val intent = Intent(requireActivity(), MessageActivity::class.java)
                 intent.putExtra(

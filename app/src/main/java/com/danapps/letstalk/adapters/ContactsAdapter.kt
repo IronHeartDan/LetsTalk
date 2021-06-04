@@ -45,7 +45,7 @@ class ContactsAdapter(val context: Context) :
         holder.itemView.new_contact_itemName.text = getItem(position).name
         holder.itemView.new_contact_itemNumber.text = getItem(position).number
 
-        if (getItem(position).profile_pic.equals("null")) {
+        if (!getItem(position).profile_pic.equals("null")) {
             Glide.with(context).load(getItem(position).profile_pic).centerCrop()
                 .into(holder.itemView.new_contact_profile_pic)
         } else {

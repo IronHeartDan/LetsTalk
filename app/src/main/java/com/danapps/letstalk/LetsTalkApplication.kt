@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -11,9 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.danapps.letstalk.Constants.Companion.BASE_URL
 import com.danapps.letstalk.activities.MessageActivity
+import com.danapps.letstalk.activities.RtcActivity
 import com.danapps.letstalk.data.Dao
 import com.danapps.letstalk.data.LetsTalkDatabase
 import com.danapps.letstalk.models.ChatMessage
+import com.danapps.letstalk.models.RtcCall
 import com.danapps.letstalk.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -48,10 +51,11 @@ class LetsTalkApplication : Application() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("121212", name, importance).apply {
+            //Create Message Notification Channel
+            var name = getString(R.string.message_channel_name)
+            var descriptionText = getString(R.string.message_channel_description)
+            var importance = NotificationManager.IMPORTANCE_HIGH
+            var channel = NotificationChannel("121212", name, importance).apply {
                 description = descriptionText
                 enableLights(true)
                 lightColor = Color.CYAN
@@ -59,6 +63,18 @@ class LetsTalkApplication : Application() {
             // Register the channel with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+
+            //Create RTC Notification Channel
+            name = getString(R.string.rtc_channel_name)
+            descriptionText = getString(R.string.rtc_channel_description)
+            importance = NotificationManager.IMPORTANCE_HIGH
+            channel = NotificationChannel("212121", name, importance).apply {
+                description = descriptionText
+
+            }
+            // Register the channel with the system
             notificationManager.createNotificationChannel(channel)
         }
     }
@@ -114,6 +130,20 @@ class LetsTalkApplication : Application() {
             GlobalScope.launch {
                 dao.markSeen(markSeen.to, markSeen.from)
             }
+        }
+
+        mSocket.on("rtcCall") {
+            val rtcCall = Gson().fromJson(it[0].toString(), RtcCall::class.java)
+            Log.d("LetsTalkApplication", "startListening: ${rtcCall.from} is Calling")
+
+            startActivity(Intent(this, RtcActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra("offer",rtcCall.offer)
+                putExtra("from", rtcCall.from)
+                putExtra("to",rtcCall.to)
+                putExtra("type",1)
+            })
+
         }
     }
 

@@ -20,11 +20,11 @@ class MediaAdapter(val context: Context) :
 
     private class DiffCallback : DiffUtil.ItemCallback<Media>() {
         override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
-            return oldItem.uri === newItem.uri
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
-            return oldItem.uri == newItem.uri
+            return oldItem == newItem
         }
     }
 

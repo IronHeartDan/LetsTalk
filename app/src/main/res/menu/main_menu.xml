@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/seeSettings"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_main_settings"
         android:title="Settings"
         app:showAsAction="ifRoom" />
 
